@@ -1,0 +1,19 @@
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body>
+    {{template "header.tmpl" .}}
+    <form action="/register" method="POST">
+        Name:<input type="text" name="Name"><br>
+        Password:<input type="password" name="Password"><br>
+        Telephone:<input type="text" name="Telephone"><br>
+        Gender:<input type="radio" name="Gender" value="男">男<input type="radio" name="Gender" value="女">女<br>
+
+        <input type="submit" value="注册">
+    </form>
+</body>
+
+</html>

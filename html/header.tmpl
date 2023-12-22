@@ -1,0 +1,12 @@
+<nav>
+    <a href="home">首页</a>
+    {{if eq .name ""}}
+    <!-- <a href="user" style="float: right; margin-left:10px;">用户</a> -->
+    <a href="login" style="float: right; margin-left:10px;">登录</a>
+    <a href="register" style="float: right; margin-left:10px;">注册</a>
+    {{else}}
+    <a href="user" style="float: right; margin-left:10px;">{{.name}}</a>
+    <a href="logout" style="float: right; margin-left:10px;">登出</a>
+    {{end}}
+</nav>
+<hr>

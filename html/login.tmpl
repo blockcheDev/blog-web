@@ -1,0 +1,20 @@
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body>
+    {{template "header.tmpl" .}}
+    <form action="/login" method="POST">
+        <div>
+            Name:<input type="text" name="Name">
+        </div>
+        <div>
+            Password:<input type="password" name="Password">
+        </div>
+        <input type="submit" value="登录">
+    </form>
+</body>
+
+</html>
