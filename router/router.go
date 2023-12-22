@@ -47,6 +47,7 @@ func StartRouter() {
 		user.POST("/password", controller.UpdatePassword)
 		user.POST("/push", controller.PushArticle)
 		user.POST("/create/tag", controller.CreateTag)
+		user.POST("/create/category", controller.CreateCategory)
 	}
 
 	// article := r.Group("/article")

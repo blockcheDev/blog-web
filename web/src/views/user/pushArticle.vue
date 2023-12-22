@@ -16,14 +16,17 @@ const allCategory = ref()
 const allTag = ref()
 
 onMounted(async () => {
+    getAllCategory()
+    getAllTag()
+})
+const getAllCategory = async () => {
     try {
         const res = await api.getCategory("all")
         allCategory.value = res.data
     } catch (err) {
         console.error(err)
     }
-    getAllTag()
-})
+}
 const getAllTag = async () => {
     try {
         const res = await api.getTag("all")
@@ -44,6 +47,7 @@ const submitForm = async (form: any) => {
     }
 }
 
+// 新建标签
 const openDialogTag = ref(false)
 const newTag = reactive({
     Name: "",
@@ -53,6 +57,21 @@ const submitTag = async (data: any) => {
         const res = await api.createTag(data)
         newTag.Name = ""
         getAllTag()
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+// 新建分类
+const openDialogCategory = ref(false)
+const newCategory = reactive({
+    Name: "",
+})
+const submitCategory = async (data: any) => {
+    try {
+        const res = await api.createCategory(data)
+        newCategory.Name = ""
+        getAllCategory()
     } catch (err) {
         console.error(err)
     }
@@ -83,6 +102,7 @@ const submitTag = async (data: any) => {
                     <el-select v-model="form.CategoryID" placeholder="请选择文章的分类">
                         <el-option v-for="category in allCategory" :label="category.Name" :value="category.ID" />
                     </el-select>
+                    <el-button style="margin-left: 2em;" @click="openDialogCategory = true">添加分类</el-button>
                 </el-form-item>
                 <el-form-item label="标签">
                     <el-select v-model="form.Tags" multiple placeholder="选择标签">
@@ -101,6 +121,14 @@ const submitTag = async (data: any) => {
                 <el-form-item label="标签名称">
                     <el-input v-model="newTag.Name" style="width: 30%;"></el-input>
                     <el-button type="primary" style="margin-left: 2em;" @click="submitTag(newTag)">添加</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <el-dialog v-model="openDialogCategory" title="添加分类">
+            <el-form>
+                <el-form-item label="分类名称">
+                    <el-input v-model="newCategory.Name" style="width: 30%;"></el-input>
+                    <el-button type="primary" style="margin-left: 2em;" @click="submitCategory(newCategory)">添加</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
