@@ -43,7 +43,7 @@ const onSubmit = async () => {
         // })
         console.log(res.data.msg)
         localStorage.setItem("token", res.headers.token)
-        router.push("/home")
+        router.back()
     } catch (error) {
         console.error(error)
     }

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"regexp"
 	"webback/db"
@@ -207,6 +206,14 @@ func PushArticle(c *gin.Context) {
 	user := db.GetUserByName(name)
 	article.UserID = user.ID
 
+	res := db.DB.Create(&article)
+	if res.RowsAffected == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "文章插入数据库失败",
+		})
+		return
+	}
+
 	//处理分类
 	rela := db.ArticleCategory{
 		ArticleID:  article.ID,
@@ -223,14 +230,6 @@ func PushArticle(c *gin.Context) {
 		db.DB.Create(&rela)
 	}
 
-	log.Println(article)
-	res := db.DB.Create(&article)
-	if res.RowsAffected == 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": "插入数据库失败",
-		})
-		return
-	}
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "文章发布成功",
 		"ID":  article.ID,
