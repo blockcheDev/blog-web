@@ -37,13 +37,9 @@ const form = reactive({
 const onSubmit = async () => {
     try {
         const res = await request.post("/login", form)
-        // ElMessage({
-        //     message: res.data.msg,
-        //     type: res.data.msg === "登录成功" ? 'success' : 'warning',
-        // })
         console.log(res.data.msg)
         localStorage.setItem("token", res.headers.token)
-        router.back()
+        router.push("/home")
     } catch (error) {
         console.error(error)
     }

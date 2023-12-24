@@ -9,6 +9,6 @@ type Tag struct {
 
 func GetTag(ID interface{}) *Tag {
 	tag := Tag{}
-	DB.Where("ID=?", ID).First(&tag)
+	DB.Where("id=?", ID).First(&tag)
 	return &tag
 }

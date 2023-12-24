@@ -9,6 +9,6 @@ type Category struct {
 
 func GetCategory(ID interface{}) *Category {
 	category := Category{}
-	DB.Where("ID=?", ID).First(&category)
+	DB.Where("id=?", ID).First(&category)
 	return &category
 }

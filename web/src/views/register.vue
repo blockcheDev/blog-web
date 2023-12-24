@@ -53,16 +53,8 @@ const onSubmit = async () => {
     try {
         const res = await request.post("/register", form)
         console.log(res.data.msg)
-        // ElMessage({
-        //     message: res.data.msg,
-        //     type: 'success'
-        // })
         router.push("/login")
     } catch (error) {
-        // ElMessage({
-        //     message: error.response.data.msg,
-        //     type: 'warning'
-        // })
         console.error("提交失败", error)
     }
 }

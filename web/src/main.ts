@@ -1,18 +1,27 @@
-import { createApp } from 'vue'
-import 'highlight.js/styles/foundation.css'
+import { createApp } from "vue";
+import App from "./App.vue";
+const app = createApp(App);
 
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
+import "highlight.js/styles/foundation.css";
 
-import App from './App.vue'
-import router from './router'
-import axios from './api/axios'
+import ElementPlus from "element-plus";
+import "element-plus/dist/index.css";
+app.use(ElementPlus);
 
-const app = createApp(App)
+import router from "./router";
+app.use(router);
 
-app.use(router)
-app.use(ElementPlus)
-app.config.globalProperties.$axios = axios
+import axios from "./api/axios";
+app.config.globalProperties.$axios = axios;
 
+import VMdEditor from "@kangc/v-md-editor";
+import "@kangc/v-md-editor/lib/style/base-editor.css";
+import githubTheme from "@kangc/v-md-editor/lib/theme/github.js";
+import "@kangc/v-md-editor/lib/theme/style/github.css";
+import hljs from "highlight.js";
+VMdEditor.use(githubTheme, {
+  Hljs: hljs,
+});
+app.use(VMdEditor);
 
-app.mount('#app')
+app.mount("#app");

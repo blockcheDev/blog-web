@@ -30,19 +30,18 @@ const goToArticle = (id: any) => {
 </script>
 
 <template>
-    <div>
-        <el-card class="atc-list" v-for="atc in list" :key="atc.ID" style="height: 15vh;" @click="goToArticle(atc.ID)">
+    <div class="main">
+        <el-card class="atc-list" v-for="atc in list" :key="atc.ID" style="height: 140px;" @click="goToArticle(atc.ID)">
             <div style="display: flex; flex-flow: column;">
                 <span
                     style="font-size: 1.5em;font-weight: bold; white-space: nowrap; display: inline-block; overflow: hidden; width: 98%;">
                     {{ atc.Title }}
                 </span>
-                <span style=" white-space: nowrap; display: inline-block; overflow: hidden; width: 98%; margin-top:
-            0.9em;">
+                <span style=" white-space: nowrap; display: inline-block; overflow: hidden; width: 98%; margin-top: 10px;">
                     {{ atc.Content }}
                 </span>
-                <div style="margin-top: 0.9em;">
-                    <el-tag v-for="tag in atc.tags" style="margin-left: 10px;">{{ tag }} </el-tag>
+                <div style="margin-top: 15px;">
+                    <el-tag v-for="tag in atc.tags" style="margin-right: 10px;">{{ tag }} </el-tag>
                 </div>
             </div>
         </el-card>

@@ -29,6 +29,7 @@ import { drawerMenu } from '@/store/store';
                 <span>个人中心</span>
             </template>
             <el-menu-item index="/user/push">发布文章</el-menu-item>
+            <el-menu-item index="/user/article">文章管理</el-menu-item>
             <el-menu-item index="/user/info">个人资料</el-menu-item>
             <el-menu-item index="/user/setting">账户设置</el-menu-item>
         </el-sub-menu>

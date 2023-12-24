@@ -30,6 +30,7 @@ type ArticleCategory struct {
 
 func GetArticle(ID interface{}) *Article {
 	article := Article{}
-	DB.Where("ID=?", ID).First(&article)
+	DB.Where("id=?", ID).First(&article)
 	return &article
 }
+

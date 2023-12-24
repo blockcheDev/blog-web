@@ -35,15 +35,11 @@ const logout = () => {
                     </template>
                 </el-drawer>
                 <el-main>
-                    <el-row justify="center">
-                        <el-col :span="15">
-                            <router-view v-slot="{ Component }">
-                                <transition mode="out-in">
-                                    <component :is="Component" />
-                                </transition>
-                            </router-view>
-                        </el-col>
-                    </el-row>
+                    <router-view v-slot="{ Component }">
+                        <transition mode="out-in">
+                            <component :is="Component" />
+                        </transition>
+                    </router-view>
                 </el-main>
             </el-container>
         </el-container>
@@ -72,8 +68,8 @@ const logout = () => {
 
 .drawer-button {
     position: fixed;
-    margin-left: 1%;
-    margin-top: 5%;
+    margin-left: 20px;
+    margin-top: 80px;
     z-index: 10;
 }
 

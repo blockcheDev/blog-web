@@ -70,7 +70,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	res := db.DB.Where("Name = ?", u.Name).First(&db.User{})
+	res := db.DB.Where("name = ?", u.Name).First(&db.User{})
 	if res.RowsAffected != 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"msg": "注册失败，用户名已存在",
@@ -92,33 +92,33 @@ func Register(c *gin.Context) {
 	})
 }
 
-func AuthLoginStatus(c *gin.Context) {
-	name, err := c.Cookie("Name")
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"msg": "您未登录",
-		})
-		return
-	}
-	password, err := c.Cookie("Password")
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"msg": "您未登录",
-		})
-		return
-	}
+// func AuthLoginStatus(c *gin.Context) {
+// 	name, err := c.Cookie("Name")
+// 	if err != nil {
+// 		c.JSON(http.StatusUnauthorized, gin.H{
+// 			"msg": "您未登录",
+// 		})
+// 		return
+// 	}
+// 	password, err := c.Cookie("Password")
+// 	if err != nil {
+// 		c.JSON(http.StatusUnauthorized, gin.H{
+// 			"msg": "您未登录",
+// 		})
+// 		return
+// 	}
 
-	u := util.AuthUserAndPassword(name, password)
-	if u != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"msg": "成功",
-		})
-	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"msg": "身份验证错误，重新登录",
-		})
-	}
-}
+// 	u := util.AuthUserAndPassword(name, password)
+// 	if u != nil {
+// 		c.JSON(http.StatusOK, gin.H{
+// 			"msg": "成功",
+// 		})
+// 	} else {
+// 		c.JSON(http.StatusUnauthorized, gin.H{
+// 			"msg": "身份验证错误，重新登录",
+// 		})
+// 	}
+// }
 
 func GetUserInfo(c *gin.Context) {
 	claim, err := util.ParseToken(c.Request.Header.Get("token"))
@@ -131,7 +131,7 @@ func GetUserInfo(c *gin.Context) {
 
 	name := claim.Name
 	u := db.User{}
-	res := db.DB.Where("Name = ?", name).First(&u)
+	res := db.DB.Where("name = ?", name).First(&u)
 	if res.RowsAffected == 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": "获取数据库信息失败",
@@ -150,24 +150,6 @@ func UpdateUserInfo(c *gin.Context) {
 	c.ShouldBind(&user)
 	db.DB.Save(&user)
 
-	// mp := map[string]any{}
-	// for key, valArr := range c.Request.PostForm {
-	// 	if len(valArr) > 1 {
-	// 		c.JSON(http.StatusBadRequest, gin.H{
-	// 			"msg": "参数错误",
-	// 		})
-	// 		return
-	// 	}
-	// 	mp[key] = valArr[0]
-	// }
-	// res := db.DB.Model(&db.User{}).Where("name=?", name).Updates(mp)
-	// if res.RowsAffected == 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"msg": "更新Users表失败",
-	// 	})
-	// 	return
-	// }
-	// fmt.Println(mp)
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "修改成功",
 	})
@@ -195,44 +177,4 @@ func UpdatePassword(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "密码修改成功",
 	})
-}
-
-func PushArticle(c *gin.Context) {
-	article := db.Article{}
-	c.ShouldBind(&article)
-
-	claim, _ := util.ParseToken(c.GetHeader("token"))
-	name := claim.Name
-	user := db.GetUserByName(name)
-	article.UserID = user.ID
-
-	res := db.DB.Create(&article)
-	if res.RowsAffected == 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": "文章插入数据库失败",
-		})
-		return
-	}
-
-	//处理分类
-	rela := db.ArticleCategory{
-		ArticleID:  article.ID,
-		CategoryID: article.CategoryID,
-	}
-	db.DB.Create(&rela)
-
-	//处理标签
-	for _, ID := range article.Tags {
-		rela := db.ArticleTag{
-			ArticleID: article.ID,
-			TagID:     ID,
-		}
-		db.DB.Create(&rela)
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"msg": "文章发布成功",
-		"ID":  article.ID,
-	})
-
 }

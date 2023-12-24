@@ -15,9 +15,17 @@ import index from './layouts/index.vue';
   height: 100%;
 }
 
+.main {
+  display: flex;
+  flex-flow: column;
+}
+
 .el-card {
   border-radius: 15px !important;
   margin-bottom: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%
 }
 
 .el-dialog {

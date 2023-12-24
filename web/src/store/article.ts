@@ -11,6 +11,7 @@ export interface Article {
     Content: string;
     Type: number; // 0-原创 1-转载
     tags: string[];
+
 }
 
 const defaultData: Article = Object.freeze({

@@ -17,11 +17,11 @@ type User struct {
 
 func GetUser(ID uint) *User {
 	user := User{}
-	DB.Where("ID=?", ID).First(&user)
+	DB.Where("id=?", ID).First(&user)
 	return &user
 }
 func GetUserByName(name string) *User {
 	user := User{}
-	DB.Where("Name=?", name).First(&user)
+	DB.Where("name=?", name).First(&user)
 	return &user
 }

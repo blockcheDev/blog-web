@@ -5,7 +5,7 @@
         </el-card>
         <el-card>
             <div style="display: flex;">
-                <div style="margin: 7%; display: flex; flex-flow: column;">
+                <div style="margin: 7vh; display: flex; flex-flow: column;">
                     <el-avatar :size="250" src="https://avatars.githubusercontent.com/u/89156012?v=4" />
                     <div style="margin-top: 1em;">
                         <span style=" font-size: 1.5em; font-weight: bold;">{{ user.Name }}</span>
@@ -14,29 +14,29 @@
                     <el-button color="#f3f4f6" style="margin-top: 0.5em; border-radius: 10px;"
                         @click="dialog.openDialog()">编辑信息</el-button>
                 </div>
-                <div style="margin: auto 7%; width: 40%;">
-                    <el-card>
-                        <div style="display: flex;">
+                <div style="margin: auto 7vh auto 7vh;">
+                    <el-card style="width: 25vw;">
+                        <div style="display: flex; ">
                             <User style="width: 1.5em;" />
                             <span style="margin-left: 1em;">用户名</span>
                             <span style="margin-left: auto;">{{ user.Name }}</span>
                         </div>
                     </el-card>
-                    <el-card>
+                    <el-card style="width: 25vw;">
                         <div style="display: flex;">
                             <Message style="width: 1.5em;" />
                             <span style="margin-left: 1em;">邮箱</span>
                             <span style="margin-left: auto;">{{ user.Email }}</span>
                         </div>
                     </el-card>
-                    <el-card>
+                    <el-card style="width: 25vw;">
                         <div style="display: flex;">
                             <iphone style="width: 1.5em;" />
                             <span style="margin-left: 1em;">手机号码</span>
                             <span style="margin-left: auto;">{{ user.Telephone }}</span>
                         </div>
                     </el-card>
-                    <el-card style="margin-bottom: 0;">
+                    <el-card style="width: 25vw; margin-bottom: 0;">
                         <div style="display: flex;">
                             <Male v-if="user.Gender === '男'" style="width: 1.5em;" />
                             <Female v-else-if="user.Gender === '女'" style="width: 1.5em;" />
@@ -88,9 +88,4 @@ onMounted(async () => {
 
 </script>
 
-<style scoped>
-.cell-item {
-    display: flex;
-    align-items: center;
-}
-</style>
+<style scoped></style>
