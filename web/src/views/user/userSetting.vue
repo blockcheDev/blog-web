@@ -54,3 +54,9 @@ const submitDelete = async (data: any) => {
         </el-dialog>
     </div>
 </template>
+
+<style scoped>
+.el-card {
+    width: 60vw;
+}
+</style>

@@ -31,7 +31,8 @@ const goToArticle = (id: any) => {
 
 <template>
     <div class="main">
-        <el-card class="atc-list" v-for="atc in list" :key="atc.ID" style="height: 140px;" @click="goToArticle(atc.ID)">
+        <el-card class="atc-list" v-for="atc in list" :key="atc.ID" style="height: 140px; width: 60vw;"
+            @click="goToArticle(atc.ID)">
             <div style="display: flex; flex-flow: column;">
                 <span
                     style="font-size: 1.5em;font-weight: bold; white-space: nowrap; display: inline-block; overflow: hidden; width: 98%;">
@@ -50,7 +51,6 @@ const goToArticle = (id: any) => {
 
 <style scoped>
 .atc-list:hover {
-    box-shadow: 0 1px 6px rgba(255, 255, 255, 0.932);
     border-color: #dadada;
     border-width: 8px;
     transition: all 0.2s ease-in-out;

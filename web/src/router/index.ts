@@ -1,6 +1,7 @@
 import request from "@/api/axios";
 import { createRouter, createWebHistory } from "vue-router";
 import { ElMessage } from "element-plus";
+import { drawerMenu } from "@/store/store";
 
 const routes = [
   {
@@ -70,6 +71,9 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
+});
+router.afterEach((to, from) => {
+  drawerMenu.close();
 });
 
 // async function isAccept() {

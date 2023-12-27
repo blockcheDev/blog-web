@@ -25,7 +25,7 @@ import index from './layouts/index.vue';
   margin-bottom: 30px;
   margin-left: auto;
   margin-right: auto;
-  width: 60%
+  width: 80%
 }
 
 .el-dialog {

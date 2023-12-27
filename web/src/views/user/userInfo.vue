@@ -1,9 +1,9 @@
 <template>
     <div>
-        <el-card>
+        <el-card style="width: 60vw;">
             <PageHeader />
         </el-card>
-        <el-card>
+        <el-card style="width: 60vw;">
             <div style="display: flex;">
                 <div style="margin: 7vh; display: flex; flex-flow: column;">
                     <el-avatar :size="250" src="https://avatars.githubusercontent.com/u/89156012?v=4" />

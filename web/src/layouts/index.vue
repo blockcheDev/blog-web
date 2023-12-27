@@ -24,16 +24,7 @@ const logout = () => {
             <!-- 占位用，高度和header一致，否则main区域会侵入header -->
             <div style="height: 60px;"></div>
             <el-container>
-                <el-drawer v-model="drawerMenu.isOpen" title="I am the title" :with-header="false" direction="ltr"
-                    size="15%">
-                    <template #default>
-                        <Aside />
-                    </template>
-                    <template #footer>
-                        <el-button type="danger" @click="logout"
-                            v-if="($route.path != '/login' && $route.path != '/register')">登出</el-button>
-                    </template>
-                </el-drawer>
+                <Aside v-if="drawerMenu.isOpen" />
                 <el-main>
                     <router-view v-slot="{ Component }">
                         <transition mode="out-in">

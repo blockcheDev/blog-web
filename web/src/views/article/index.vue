@@ -61,3 +61,9 @@ onMounted(async () => {
         </el-card>
     </div>
 </template>
+
+<style scoped>
+.el-card {
+    width: 60vw;
+}
+</style>
