@@ -88,8 +88,10 @@ const logout = () => {
 
 <style scoped>
 .el-card:hover {
-    border-color: #dadada;
-    border-width: 8px;
+    /* border-color: #dadada;
+    border-width: 8px; */
+    width: 90%;
+    box-shadow: 0 0 0 8px #dadada;
     transition: all 0.2s ease-in-out;
 }
 </style>

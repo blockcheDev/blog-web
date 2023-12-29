@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span class="header-title" @click="goToHome()">blockche个人博客</span>
+        <span class="header-title" @click="goToHome()">个人博客系统</span>
     </div>
     <div>
         <div class="header-right">

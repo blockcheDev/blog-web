@@ -12,12 +12,6 @@ import (
 func ModifyArticle(c *gin.Context) {
 	data := db.Article{}
 	c.ShouldBindBodyWith(&data, binding.JSON) //多次绑定时用这个
-	if data.UserID != 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"msg": "禁止修改文章作者",
-		})
-		return
-	}
 
 	claim, _ := util.ParseToken(c.GetHeader("token"))
 	name := claim.Name
@@ -25,6 +19,12 @@ func ModifyArticle(c *gin.Context) {
 	if article.UserID != db.GetUserByName(name).ID {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"msg": "只能修改本人的文章",
+		})
+		return
+	}
+	if data.UserID != article.UserID {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"msg": "禁止修改文章作者",
 		})
 		return
 	}

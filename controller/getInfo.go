@@ -61,12 +61,19 @@ func GetTag(c *gin.Context) {
 func GetTagByArticle(c *gin.Context) {
 	id := c.Param("id")
 	data := []string{}
-	db.DB.Model(&db.ArticleTag{}).Select("tags.name").Joins("join tags on tags.id = article_tags.tag_id").Where("article_tags.article_id=?", id).Scan(&data)
+	db.DB.Model(&db.ArticleTag{}).Select("tags.name").Joins("join tags on tags.id = article_tags.tag_id").Where("article_tags.article_id=?", id).Find(&data)
 	c.JSON(http.StatusOK, data)
 }
 func GetTagIDByArticle(c *gin.Context) {
 	id := c.Param("id")
 	data := []uint{}
-	db.DB.Model(&db.ArticleTag{}).Select("tags.id").Joins("join tags on tags.id = article_tags.tag_id").Where("article_tags.article_id=?", id).Scan(&data)
+	db.DB.Model(&db.ArticleTag{}).Select("tags.id").Joins("join tags on tags.id = article_tags.tag_id").Where("article_tags.article_id=?", id).Find(&data)
+	c.JSON(http.StatusOK, data)
+}
+
+func GetArticleListByCategory(c *gin.Context) {
+	id := c.Param("id")
+	data := []db.Article{}
+	db.DB.Table("articles").Where("category_id=?", id).Find(&data)
 	c.JSON(http.StatusOK, data)
 }

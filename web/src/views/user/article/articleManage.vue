@@ -5,6 +5,7 @@ import api from '@/api/api';
 import { onMounted, ref } from 'vue';
 import dayjs from 'dayjs';
 import router from '@/router';
+import { computed } from '@vue/reactivity';
 
 const formatDate = (date: any) => {
     return dayjs(date).format("YYYY-MM-DD HH:mm:ss")
@@ -59,6 +60,9 @@ const deleteArticle = async () => {
     }
 }
 
+const search = ref("")
+const filterData = computed(() => list.filter((data) => !search.value || data.Title.toLowerCase().includes(search.value.toLowerCase())))
+
 </script>
 
 <template>
@@ -67,30 +71,33 @@ const deleteArticle = async () => {
             <PageHeader />
         </el-card>
         <el-card style="width: 85vw;">
-            <el-table :data="list" stripe style="width: 100%">
-                <el-table-column prop="ID" label="ID" width="100" />
-                <el-table-column label="标题" width="300">
+            <el-table :data="filterData" stripe style="width: 100%">
+                <el-table-column sortable prop="ID" label="ID" width="100" />
+                <el-table-column sortable label="标题" width="300">
                     <template v-slot="scope">
                         <span style="color: blue;" @click="goToArticle(scope.row.ID)">{{ scope.row.Title }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="CategoryName" label="分类" />
-                <el-table-column label="类型">
+                <el-table-column sortable prop="CategoryName" label="分类" />
+                <el-table-column sortable label="类型">
                     <template v-slot="scope">
                         <span>{{ scope.row.Type === 0 ? "原创" : "转载" }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="创建时间">
+                <el-table-column sortable label="创建时间">
                     <template v-slot="scope">
                         <span>{{ formatDate(scope.row.CreatedAt) }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="修改时间">
+                <el-table-column sortable label="修改时间">
                     <template v-slot="scope">
                         <span>{{ formatDate(scope.row.UpdatedAt) }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column>
+                    <template #header>
+                        <el-input v-model="search" placeholder="搜索标题" />
+                    </template>
                     <template v-slot="scope">
                         <el-button type="primary" size="small" @click="goToEditArticle(scope.row.ID)">编辑</el-button>
                         <el-button type="danger" size="small" @click="openDeleteDialogFunc(scope.row.ID)">删除</el-button>

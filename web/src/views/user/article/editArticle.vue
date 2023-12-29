@@ -2,6 +2,7 @@
 import { nextTick, onMounted, reactive, ref } from 'vue';
 import api from '@/api/api'
 import PageHeader from '@/layouts/PageHeader.vue';
+import { allCategory, getAllCategory, allTag, getAllTag } from '@/store/article';
 import router from '@/router';
 import { useRoute } from 'vue-router';
 const route = useRoute()
@@ -14,9 +15,6 @@ const form = reactive({
     Type: 0,
     Tags: [],
 })
-
-const allCategory = ref()
-const allTag = ref()
 
 onMounted(async () => {
     getAllCategory()
@@ -35,22 +33,6 @@ onMounted(async () => {
         console.error(err)
     }
 })
-const getAllCategory = async () => {
-    try {
-        const res = await api.getCategory("all")
-        allCategory.value = res.data
-    } catch (err) {
-        console.error(err)
-    }
-}
-const getAllTag = async () => {
-    try {
-        const res = await api.getTag("all")
-        allTag.value = res.data
-    } catch (err) {
-        console.error(err)
-    }
-}
 
 const submitForm = async (form: any) => {
     try {

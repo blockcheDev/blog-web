@@ -52,13 +52,24 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div v-if="data.Title != ''">
-        <el-card>
-            <articleHeader :data="data" />
-        </el-card>
-        <el-card>
-            <div v-html="html"></div>
-        </el-card>
+    <div v-if="data.Title != ''" style="display: flex; justify-content: center;">
+        <!-- <div>
+            <el-card style="width: 15vw; margin-left: 5vw; margin-right: 2vw;">
+                <div style="display: flex;">
+                    <el-avatar style="width: 5vw; height: 5vw; margin: auto;"
+                        src="https://avatars.githubusercontent.com/u/89156012?v=4" />
+                </div>
+            </el-card>
+        </div> -->
+        <div>
+            <el-card>
+                <articleHeader :data="data" />
+            </el-card>
+            <el-card>
+                <!-- <div v-html="html"></div> -->
+                <v-md-editor :model-value="data.Content" mode="preview"></v-md-editor>
+            </el-card>
+        </div>
     </div>
 </template>
 

@@ -20,6 +20,8 @@ func StartRouter() {
 	r.POST("/register", controller.Register)
 	r.POST("/login", controller.Login)
 
+	r.GET("/category/:id", controller.GetArticleListByCategory)
+
 	// r.POST("/auth", controller.AuthLoginStatus)
 
 	user := r.Group("/user")

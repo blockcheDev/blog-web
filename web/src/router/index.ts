@@ -54,6 +54,14 @@ const routes = [
     path: "/article/:id",
     component: () => import("../views/article/index.vue"),
   },
+  {
+    path: "/category",
+    component: () => import("../views/category/index.vue"),
+  },
+  {
+    path: "/category/:id",
+    component: () => import("../views/category/show.vue"),
+  },
 ];
 
 const router = createRouter({
