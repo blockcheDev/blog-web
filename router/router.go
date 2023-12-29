@@ -22,6 +22,7 @@ func StartRouter() {
 
 	r.GET("/category/:id", controller.GetArticleListByCategory)
 	r.GET("/tag/:id", controller.GetArticleListByTag)
+	r.GET("/article/:id/comment", controller.GetCommentListByArticle)
 
 	// r.POST("/auth", controller.AuthLoginStatus)
 
@@ -35,6 +36,7 @@ func StartRouter() {
 		user.POST("/modify/article", controller.ModifyArticle)
 		user.POST("/create/tag", controller.CreateTag)
 		user.POST("/create/category", controller.CreateCategory)
+		user.POST("/create/comment", controller.PushComment)
 
 		user.POST("/delete/user", controller.DeleteUser)
 		user.POST("/delete/article/:id", controller.DeleteArticle)
@@ -47,6 +49,7 @@ func StartRouter() {
 		getInfo.GET("/article/:id", controller.GetArticle)
 		getInfo.GET("/article/:id/tag", controller.GetTagByArticle)
 		getInfo.GET("/article/:id/tagid", controller.GetTagIDByArticle)
+		getInfo.GET("/user/:id", controller.GetUser)
 	}
 
 	r.Run(":8080")

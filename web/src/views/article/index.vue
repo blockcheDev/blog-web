@@ -5,6 +5,7 @@ import { reactive, onMounted, ref } from 'vue'
 import { marked } from 'marked'
 import hljs from 'highlight.js';
 import articleHeader from './articleHeader.vue'
+import comment from './comment.vue';
 import { defaultData } from '@/store/article'
 import type { Article } from '@/store/article'
 
@@ -68,6 +69,9 @@ onMounted(async () => {
             <el-card>
                 <!-- <div v-html="html"></div> -->
                 <v-md-editor :model-value="data.Content" mode="preview"></v-md-editor>
+            </el-card>
+            <el-card>
+                <comment :articleID="route.params.id" />
             </el-card>
         </div>
     </div>

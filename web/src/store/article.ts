@@ -21,6 +21,19 @@ export interface Tag {
   ID: number;
   Name: string;
 }
+export interface Comment {
+  ID: number;
+  CreatedAt: string;
+  UserID: number;
+  UserName: string;
+  ArticleID: number;
+  ReplyTopCommentID: number;
+  ReplyCommentID: number;
+  Content: string;
+  Favor: number;
+
+  Floor: number;
+}
 
 const defaultData: Article = Object.freeze({
   ID: 0,

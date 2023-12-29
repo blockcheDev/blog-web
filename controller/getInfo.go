@@ -7,6 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetUser(c *gin.Context) {
+	id := c.Param("id")
+	user := db.GetUser(id)
+	c.JSON(http.StatusOK, gin.H{
+		"Name": user.Name,
+	})
+}
 func GetArticle(c *gin.Context) {
 	id := c.Param("id")
 	if id == "all" {
@@ -81,5 +88,11 @@ func GetArticleListByTag(c *gin.Context) {
 	id := c.Param("id")
 	data := []db.Article{}
 	db.DB.Model(&db.ArticleTag{}).Select("articles.*").Joins("join articles on articles.id = article_tags.article_id").Where("article_tags.tag_id=?", id).Find(&data)
+	c.JSON(http.StatusOK, data)
+}
+func GetCommentListByArticle(c *gin.Context) {
+	id := c.Param("id")
+	data := []db.Comment{}
+	db.DB.Where("article_id=?", id).Find(&data)
 	c.JSON(http.StatusOK, data)
 }

@@ -21,6 +21,7 @@ func InitDatabase() {
 	DB.AutoMigrate(&ArticleCategory{})
 	DB.AutoMigrate(&Tag{})
 	DB.AutoMigrate(&Category{})
+	DB.AutoMigrate(&Comment{})
 	// db.Create(&User{Name: "blockche", Password: "123456"})
 	// DB.Create(&Article{Content: "# test"})
 	// DB.Create(&Category{Name: "默认分类"})

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"webback/db"
 	"webback/util"
@@ -111,5 +112,34 @@ func CreateCategory(c *gin.Context) {
 	db.DB.Create(&cate)
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "创建成功",
+	})
+}
+func PushComment(c *gin.Context) {
+	// data, _ := c.GetRawData()
+	// body := map[string]string{}
+	// _ = json.Unmarshal(data, &body)
+
+	// log.Println(body)
+
+	comment := db.Comment{}
+	if err := c.ShouldBind(&comment); err != nil {
+		log.Println("err=>", err)
+	}
+
+	if comment.Content == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"msg": "评论不能为空",
+		})
+		return
+	}
+
+	claim, _ := util.ParseToken(c.GetHeader("token"))
+	name := claim.Name
+	user := db.GetUserByName(name)
+	comment.UserID = user.ID
+
+	db.DB.Create(&comment)
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "发送成功",
 	})
 }

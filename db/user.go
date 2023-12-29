@@ -15,7 +15,7 @@ type User struct {
 	jwt.StandardClaims `gorm:"-"`
 }
 
-func GetUser(ID uint) *User {
+func GetUser(ID any) *User {
 	user := User{}
 	DB.Where("id=?", ID).First(&user)
 	return &user
