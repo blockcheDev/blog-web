@@ -4,11 +4,11 @@ import * as article from '@/store/article'
 import { onMounted } from 'vue';
 
 onMounted(() => {
-    article.getAllCategory()
+    article.getAllTag()
 })
 
-const goToCategory = (id: any) => {
-    router.push(`/category/${id}`)
+const goToTag = (id: any) => {
+    router.push(`/tag/${id}`)
 }
 
 </script>
@@ -16,8 +16,8 @@ const goToCategory = (id: any) => {
 <template>
     <div style="display: flex;">
         <div style="display: flex; flex-flow: wrap; justify-content: left; width: 70vw; margin: 0 auto 0 auto;">
-            <el-card v-for="cate in article.allCategory" @click="goToCategory(cate.ID)">
-                <span style="font-size:larger; font-weight: bold;">{{ cate.Name }}</span>
+            <el-card v-for="tag in article.allTag" :key="tag.Name" @click="goToTag(tag.ID)">
+                <span style="font-size:larger; font-weight: bold;">{{ tag.Name }}</span>
             </el-card>
         </div>
     </div>

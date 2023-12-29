@@ -77,3 +77,9 @@ func GetArticleListByCategory(c *gin.Context) {
 	db.DB.Table("articles").Where("category_id=?", id).Find(&data)
 	c.JSON(http.StatusOK, data)
 }
+func GetArticleListByTag(c *gin.Context) {
+	id := c.Param("id")
+	data := []db.Article{}
+	db.DB.Model(&db.ArticleTag{}).Select("articles.*").Joins("join articles on articles.id = article_tags.article_id").Where("article_tags.tag_id=?", id).Find(&data)
+	c.JSON(http.StatusOK, data)
+}

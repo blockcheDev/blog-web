@@ -7,6 +7,7 @@ export default {
   getTagByArticle: (id: any) => request.get(`/getInfo/article/${id}/tag`), //根据文章ID获取标签
   getTagIDByArticle: (id: any) => request.get(`/getInfo/article/${id}/tagid`), //根据文章ID获取标签ID
   getArticleListByCategory: (id: any) => request.get(`/category/${id}`),
+  getArticleListByTag: (id: any) => request.get(`/tag/${id}`),
 
   pushArticle: (form: any) => request.post("/user/push", form),
   createTag: (data: any) => request.post(`/user/create/tag`, data),

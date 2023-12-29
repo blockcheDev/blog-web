@@ -21,6 +21,7 @@ func StartRouter() {
 	r.POST("/login", controller.Login)
 
 	r.GET("/category/:id", controller.GetArticleListByCategory)
+	r.GET("/tag/:id", controller.GetArticleListByTag)
 
 	// r.POST("/auth", controller.AuthLoginStatus)
 

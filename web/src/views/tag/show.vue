@@ -13,13 +13,13 @@ const title = ref("")
 
 onMounted(async () => {
     try {
-        const res = await api.getCategory(route.params.id)
-        title.value = `分类：${res.data.Name}`
+        const res = await api.getTag(route.params.id)
+        title.value = `标签：${res.data.Name}`
     } catch (err) {
         console.error(err)
     }
     try {
-        const res = await api.getArticleListByCategory(route.params.id)
+        const res = await api.getArticleListByTag(route.params.id)
         console.log(res.data)
         Object.assign(list, res.data)
     } catch (err) {

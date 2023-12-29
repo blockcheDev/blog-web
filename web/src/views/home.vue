@@ -33,6 +33,9 @@ const goToArticle = (id: any) => {
 const goToCategory = () => {
     router.push("/category")
 }
+const goToTag = () => {
+    router.push("/tag")
+}
 </script>
 
 <template>
@@ -70,7 +73,7 @@ const goToCategory = () => {
                             <span>分类</span>
                             <span style="margin: auto; font-size: 1.2em;">{{ store.allCategory.length }}</span>
                         </div>
-                        <div class="info" style="display: flex; flex-flow: column;">
+                        <div class="info" style="display: flex; flex-flow: column;" @click="goToTag()">
                             <span>标签</span>
                             <span style="margin: auto; font-size: 1.2em;">{{ store.allTag.length }}</span>
                         </div>

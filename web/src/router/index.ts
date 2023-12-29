@@ -62,6 +62,14 @@ const routes = [
     path: "/category/:id",
     component: () => import("../views/category/show.vue"),
   },
+  {
+    path: "/tag",
+    component: () => import("../views/tag/index.vue"),
+  },
+  {
+    path: "/tag/:id",
+    component: () => import("../views/tag/show.vue"),
+  },
 ];
 
 const router = createRouter({
