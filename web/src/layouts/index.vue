@@ -41,9 +41,6 @@ const logout = () => {
 .el-header {
     /* background-color: #f6f8fa; */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     /* margin-bottom: 3px; */
     backdrop-filter: saturate(50%) blur(4px);
     background: rgba(255, 255, 255, .5);

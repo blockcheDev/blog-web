@@ -6,6 +6,7 @@ import { marked } from 'marked'
 import hljs from 'highlight.js';
 import articleHeader from './articleHeader.vue'
 import comment from './comment.vue';
+import info from './info.vue'
 import { defaultData } from '@/store/article'
 import type { Article } from '@/store/article'
 
@@ -35,6 +36,12 @@ onMounted(async () => {
         html.value = marked(data.Content)
     } catch (err) {
         console.error("文章获取失败", err)
+    }
+    try {
+        const res = await api.getUser(data.UserID)
+        data.UserName = res.data.Name
+    } catch (err) {
+        console.error(err)
     }
     try {
         const res = await api.getTagByArticle(data.ID)
@@ -69,6 +76,9 @@ onMounted(async () => {
             <el-card>
                 <!-- <div v-html="html"></div> -->
                 <v-md-editor :model-value="data.Content" mode="preview"></v-md-editor>
+            </el-card>
+            <el-card>
+                <info :data="data" />
             </el-card>
             <el-card>
                 <comment :articleID="route.params.id" />

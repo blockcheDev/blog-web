@@ -51,3 +51,21 @@ func DeleteArticle(c *gin.Context) {
 		"msg": "删除成功",
 	})
 }
+
+func DeleteComment(c *gin.Context) {
+	id := c.Param("id")
+	comment := *db.GetComment(id)
+	claim, _ := util.ParseToken(c.GetHeader("token"))
+	name := claim.Name
+	if comment.UserID != db.GetUserByName(name).ID {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"msg": "只能删除自己的评论",
+		})
+		return
+	}
+
+	db.DB.Delete(&comment)
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "删除成功",
+	})
+}

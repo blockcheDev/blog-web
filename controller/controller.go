@@ -3,7 +3,6 @@ package controller
 import (
 	"fmt"
 	"net/http"
-	"regexp"
 	"webback/db"
 	"webback/util"
 
@@ -32,8 +31,6 @@ func Login(c *gin.Context) {
 
 	u := util.AuthUserAndPassword(user.Name, user.Password)
 	if u != nil {
-		// c.SetCookie("Name", u.Name, 3600, "/", "localhost", false, true)
-		// c.SetCookie("Password", u.Password, 3600, "/", "localhost", false, true)
 		tokenString, err := util.GenerateToken(u.Name)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -41,7 +38,6 @@ func Login(c *gin.Context) {
 			})
 			return
 		}
-		// fmt.Println(tokenString)
 		c.Header("token", tokenString)
 		c.JSON(http.StatusOK, gin.H{
 			"msg": "登录成功",
@@ -57,18 +53,18 @@ func Register(c *gin.Context) {
 	u := &db.User{}
 	c.ShouldBind(u)
 
-	if u.Name == "" || u.Password == "" || u.Email == "" {
+	if u.Name == "" || u.Password == "" || u.Email == "" || u.Gender == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"msg": "注册失败，信息不能为空",
 		})
 		return
 	}
-	if m, _ := regexp.MatchString(`^([\w\.\_]{2,10})@(\w{1,})\.([a-z]{2,4})$`, u.Email); !m {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"msg": "注册失败，邮箱格式错误",
-		})
-		return
-	}
+	// if m, _ := regexp.MatchString(`^([\w\.\_]{2,10})@(\w{1,})\.([a-z]{2,4})$`, u.Email); !m {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"msg": "注册失败，邮箱格式错误",
+	// 	})
+	// 	return
+	// }
 
 	res := db.DB.Where("name = ?", u.Name).First(&db.User{})
 	if res.RowsAffected != 0 {
@@ -78,7 +74,6 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// println(u.Name)
 	res = db.DB.Create(&u)
 	if res.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{

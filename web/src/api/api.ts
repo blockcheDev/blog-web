@@ -18,6 +18,7 @@ export default {
 
   deleteUser: (data: any) => request.post(`/user/delete/user`, data),
   deleteArticle: (id: any) => request.post(`/user/delete/article/${id}`),
+  deleteComment: (id: any) => request.delete(`/user/delete/comment/${id}`),
 
   modifyArticle: (data: any) => request.post("/user/modify/article", data),
 };

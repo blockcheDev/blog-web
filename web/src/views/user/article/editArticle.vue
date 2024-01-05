@@ -97,13 +97,13 @@ const submitCategory = async (data: any) => {
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="文章分类">
-                    <el-select v-model="form.CategoryID" placeholder="请选择文章的分类">
+                    <el-select v-model="form.CategoryID" filterable placeholder="请选择文章的分类">
                         <el-option v-for="category in allCategory" :label="category.Name" :value="category.ID" />
                     </el-select>
                     <el-button style="margin-left: 2em;" @click="openDialogCategory = true">添加分类</el-button>
                 </el-form-item>
                 <el-form-item label="标签">
-                    <el-select v-model="form.Tags" multiple placeholder="选择标签">
+                    <el-select v-model="form.Tags" multiple filterable placeholder="选择标签">
                         <el-option v-for="tag in allTag" :key="tag.ID" :label="tag.Name" :value="tag.ID" />
                     </el-select>
                     <el-button style="margin-left: 2em;" @click="openDialogTag = true">添加标签</el-button>

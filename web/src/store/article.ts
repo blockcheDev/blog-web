@@ -5,9 +5,10 @@ export interface Article {
   ID: number;
   CreatedAt: string;
   UpdatedAt: string;
-  CategoryID: string;
+  CategoryID: number;
   CategoryName: string;
-  UserID: string;
+  UserID: number;
+  UserName: string;
   Title: string;
   Content: string;
   Type: number; // 0-原创 1-转载
@@ -39,9 +40,10 @@ const defaultData: Article = Object.freeze({
   ID: 0,
   CreatedAt: "",
   UpdatedAt: "",
-  CategoryID: "",
+  CategoryID: 0,
   CategoryName: "",
-  UserID: "",
+  UserID: 0,
+  UserName: "",
   Title: "",
   Content: "",
   Type: 0,

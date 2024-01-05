@@ -2,6 +2,7 @@
 import api from '@/api/api';
 import { onMounted, reactive, ref } from 'vue';
 import type { Comment } from '@/store/article';
+import { userInfo } from '@/store/user'
 import dayjs from 'dayjs';
 const formatDate = (date: any) => {
     return dayjs(date).format("YYYY-MM-DD hh:mm")
@@ -14,7 +15,10 @@ const pushComment = async () => {
     comment.ArticleID = Number(prop.articleID);
     try {
         const res = await api.pushComment(comment)
-        location.reload()
+        // 等待700ms再执行内部方法
+        setTimeout(() => {
+            location.reload()
+        }, 700)
     } catch (err) {
         console.error(err)
     }
@@ -38,7 +42,19 @@ onMounted(async () => {
         }
         list[i].Floor = i + 1
     }
+    userInfo.getInfo()
 })
+
+const deleteComment = async (id: any) => {
+    try {
+        const res = await api.deleteComment(id)
+        setTimeout(() => {
+            location.reload()
+        }, 700)
+    } catch (err) {
+        console.error(err)
+    }
+}
 
 </script>
 
@@ -55,13 +71,15 @@ onMounted(async () => {
             </div>
         </div>
         <div>
-            <div v-for="cmt in list" style="margin-top: 1em; display: flex; flex-flow: column;">
+            <div v-for="cmt in list" style="margin-top: 1.5em; display: flex; flex-flow: column;">
                 <div style="display: flex; align-items: center;">
                     <el-tag size="small">#{{ cmt.Floor }}楼</el-tag>
-                    <span style="font-size: 1.1em; margin-left: 1em;">{{ cmt.UserName }}</span>
+                    <span style="font-size: 1.1em; margin-left: 1em;">{{ cmt.UserName === "" ? "账号已注销" : cmt.UserName }}</span>
                     <span style="font-size: 1.1em; color: gray; margin-left: 0.5em;">{{ formatDate(cmt.CreatedAt) }}</span>
+                    <el-button v-if="cmt.UserName === userInfo.Name" link style="margin-left: 0.5em;"
+                        @click="deleteComment(cmt.ID)">删除</el-button>
                 </div>
-                <el-card style="margin: 0.5em auto 0 0">
+                <el-card style="margin: 0.5em auto 0 0; width: auto;">
                     <span>{{ cmt.Content }}</span>
                 </el-card>
             </div>

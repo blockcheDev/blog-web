@@ -40,6 +40,7 @@ func StartRouter() {
 
 		user.POST("/delete/user", controller.DeleteUser)
 		user.POST("/delete/article/:id", controller.DeleteArticle)
+		user.DELETE("/delete/comment/:id", controller.DeleteComment)
 	}
 
 	getInfo := r.Group("/getInfo")

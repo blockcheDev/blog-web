@@ -3,7 +3,7 @@ import axios from "axios";
 import { ElMessage } from "element-plus";
 const request = axios.create({
   baseURL: "http://localhost:8080", //这里配置的是后端服务提供的接口
-  //   baseURL: "http://www.hitori.cn:8080",
+  // baseURL: "http://www.hitori.cn:8080",
   timeout: 1000,
 });
 

@@ -11,7 +11,7 @@ type User struct {
 	Password           string `gorm:"not null"`
 	Email              string `gorm:"not null"`
 	Telephone          string
-	Gender             string
+	Gender             string `gorm:"not null"`
 	jwt.StandardClaims `gorm:"-"`
 }
 
