@@ -34,7 +34,7 @@
 </template>
   
 <script lang="ts" setup>
-import request from '@/api/axios';
+import api from '@/api/api';
 import router from '@/router';
 import { reactive } from 'vue'
 import { ElMessage } from 'element-plus'
@@ -51,7 +51,7 @@ const form = reactive({
 
 const onSubmit = async () => {
     try {
-        const res = await request.post("/register", form)
+        const res = await api.register(form)
         console.log(res.data.msg)
         router.push("/login")
     } catch (error) {

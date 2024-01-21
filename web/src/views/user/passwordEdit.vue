@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import request from '@/api/axios';
+import api from '@/api/api';
 import { reactive, ref } from 'vue';
 import { ElMessage } from 'element-plus'
 
@@ -45,10 +45,11 @@ const saveEdit = async () => {
     } else {
         try {
             console.log(editForm)
-            const res = await request.post("/user/password", editForm)
+            const res = await api.modifyUserPassword(editForm)
             dialogFormVisible.value = false
+            location.reload()
         } catch (err) {
-            console.error("更新密码", err)
+            console.error("更新密码失败", err)
         }
     }
 }

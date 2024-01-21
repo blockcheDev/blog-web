@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import request from '@/api/axios';
+import api from '@/api/api';
 import {
     Iphone,
     User,
@@ -79,7 +79,7 @@ const user = reactive({
 
 onMounted(async () => {
     try {
-        const res = await request.get("/user")
+        const res = await api.getUser()
         Object.assign(user, res.data)
     } catch (err) {
         console.error("获取用户信息失败", err)

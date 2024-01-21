@@ -138,6 +138,7 @@ func GetUserInfo(c *gin.Context) {
 }
 
 func UpdateUserInfo(c *gin.Context) {
+	fmt.Println(c.Request)
 	claim, _ := util.ParseToken(c.GetHeader("token"))
 	name := claim.Name
 	user := db.User{}
@@ -159,6 +160,8 @@ func UpdatePassword(c *gin.Context) {
 		NewPassword string
 	}{}
 	c.ShouldBind(&form)
+
+	fmt.Println(form)
 
 	if form.OldPassword != user.Password {
 		c.JSON(http.StatusBadRequest, gin.H{

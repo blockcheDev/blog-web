@@ -5,7 +5,7 @@ export const userInfo = reactive({
   Name: "",
   async getInfo() {
     try {
-      const res = await api.getUser(0);
+      const res = await api.getUserName(0);
       this.Name = res.data.Name;
     } catch (err) {
       console.error(err);

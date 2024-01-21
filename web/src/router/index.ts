@@ -1,4 +1,3 @@
-import request from "@/api/axios";
 import { createRouter, createWebHistory } from "vue-router";
 import { ElMessage } from "element-plus";
 import { drawerMenu } from "@/store/store";

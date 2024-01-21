@@ -38,7 +38,7 @@ onMounted(async () => {
         console.error("文章获取失败", err)
     }
     try {
-        const res = await api.getUser(data.UserID)
+        const res = await api.getUserName(data.UserID)
         data.UserName = res.data.Name
     } catch (err) {
         console.error(err)

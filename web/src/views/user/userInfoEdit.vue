@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import request from '@/api/axios';
+import api from '@/api/api';
 import { reactive, ref } from 'vue';
 
 const props = defineProps(['user'])
@@ -45,10 +45,11 @@ const openDialog = () => {
 const dialogFormVisible = ref(false)
 const saveEdit = async () => {
     try {
-        const res = await request.post("/user/update", editForm)
+        const res = await api.modifyUser(editForm)
         Object.assign(props.user, editForm)
         console.log(editForm)
         dialogFormVisible.value = false
+        // location.reload()
     } catch (err) {
         console.error("更新用户信息错误", err)
     }

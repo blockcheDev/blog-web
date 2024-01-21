@@ -1,24 +1,31 @@
 import request from "./axios";
 
 export default {
-  getUser: (id: any) => request.get(`/getInfo/user/${id}`),
-  getArticle: (id: any) => request.get(`/getInfo/article/${id}`),
-  getCategory: (id: any) => request.get(`/getInfo/category/${id}`),
-  getTag: (id: any) => request.get(`/getInfo/tag/${id}`),
-  getTagByArticle: (id: any) => request.get(`/getInfo/article/${id}/tag`), //根据文章ID获取标签
-  getTagIDByArticle: (id: any) => request.get(`/getInfo/article/${id}/tagid`), //根据文章ID获取标签ID
-  getArticleListByCategory: (id: any) => request.get(`/category/${id}`),
-  getArticleListByTag: (id: any) => request.get(`/tag/${id}`),
-  getCommentListByArticle: (id: any) => request.get(`/article/${id}/comment`),
+  getUserName: (id: any) => request.get(`/api/user/${id}`),
+  getArticle: (id: any) => request.get(`/api/article/${id}`),
+  getCategory: (id: any) => request.get(`/api/category/${id}`),
+  getTag: (id: any) => request.get(`/api/tag/${id}`),
+  getTagByArticle: (id: any) => request.get(`/api/article/${id}/tag`), //根据文章ID获取标签
+  getTagIDByArticle: (id: any) => request.get(`/api/article/${id}/tagid`), //根据文章ID获取标签ID
+  getArticleListByCategory: (id: any) =>
+    request.get(`/api/category/${id}/list`), // 根据分类id获取文章列表
+  getArticleListByTag: (id: any) => request.get(`/api/tag/${id}/list`), // 根据标签id获取文章列表
+  getCommentListByArticle: (id: any) =>
+    request.get(`/api/article/${id}/comment`), // 根据文章id获取评论列表
 
-  pushArticle: (form: any) => request.post("/user/push", form),
-  createTag: (data: any) => request.post(`/user/create/tag`, data),
-  createCategory: (data: any) => request.post(`/user/create/category`, data),
-  pushComment: (data: any) => request.post("/user/create/comment", data),
+  login: (form: any) => request.post("/api/login", form), // 用户登录
+  register: (form: any) => request.post("/api/register", form), // 用户注册
+  getUser: () => request.get("/api/user"), // 获取用户信息
+  modifyUser: (form: any) => request.put("/api/user", form), // 更新用户信息
+  modifyUserPassword: (form: any) => request.put("/api/user/password", form), // 修改用户密码
+  pushArticle: (form: any) => request.post("/api/article", form),
+  createTag: (data: any) => request.post(`/api/tag`, data),
+  createCategory: (data: any) => request.post(`/api/category`, data),
+  pushComment: (data: any) => request.post("/api/comment", data),
 
-  deleteUser: (data: any) => request.post(`/user/delete/user`, data),
-  deleteArticle: (id: any) => request.post(`/user/delete/article/${id}`),
-  deleteComment: (id: any) => request.delete(`/user/delete/comment/${id}`),
+  deleteUser: (data: any) => request.delete(`/api/user`, data),
+  deleteArticle: (id: any) => request.delete(`/api/article/${id}`),
+  deleteComment: (id: any) => request.delete(`/api/comment/${id}`),
 
-  modifyArticle: (data: any) => request.post("/user/modify/article", data),
+  modifyArticle: (data: any) => request.put("/api/article", data),
 };

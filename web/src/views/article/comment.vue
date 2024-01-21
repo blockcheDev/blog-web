@@ -35,7 +35,7 @@ onMounted(async () => {
     }
     for (var i = 0; i < list.length; i++) {
         try {
-            const res = await api.getUser(list[i].UserID)
+            const res = await api.getUserName(list[i].UserID)
             list[i].UserName = res.data.Name
         } catch (err) {
             console.error(err)
@@ -74,7 +74,8 @@ const deleteComment = async (id: any) => {
             <div v-for="cmt in list" style="margin-top: 1.5em; display: flex; flex-flow: column;">
                 <div style="display: flex; align-items: center;">
                     <el-tag size="small">#{{ cmt.Floor }}楼</el-tag>
-                    <span style="font-size: 1.1em; margin-left: 1em;">{{ cmt.UserName === "" ? "账号已注销" : cmt.UserName }}</span>
+                    <span style="font-size: 1.1em; margin-left: 1em;">{{ cmt.UserName === "" ? "账号已注销" : cmt.UserName
+                    }}</span>
                     <span style="font-size: 1.1em; color: gray; margin-left: 0.5em;">{{ formatDate(cmt.CreatedAt) }}</span>
                     <el-button v-if="cmt.UserName === userInfo.Name" link style="margin-left: 0.5em;"
                         @click="deleteComment(cmt.ID)">删除</el-button>
