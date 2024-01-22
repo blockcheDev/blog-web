@@ -17,7 +17,7 @@ func AuthLogin(c *gin.Context) {
 		_, err := util.ParseToken(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"msg": "认证失败，重新登录",
+				"msg": "请登录",
 			})
 			c.Abort()
 		}

@@ -31,12 +31,14 @@ request.interceptors.response.use(
   (err) => {
     // 401表示认证失败，可能是token过期或错误
     if (err.response.status === 401) {
-      localStorage.setItem("token", "");
+      if (err.response.data.msg === "请登录") {
+        localStorage.setItem("token", "");
+        router.push("/login");
+      }
       // ElMessage({
       // 	message: "登录过期，请重新登录",
       // 	type: 'warning'
       // })
-      router.push("/login");
     }
     ElMessage({
       message: err.response.data.msg,

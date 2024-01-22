@@ -71,7 +71,7 @@ const filterData = computed(() => list.filter((data) => !search.value || data.Ti
             <PageHeader />
         </el-card>
         <el-card style="width: 85vw;">
-            <el-table :data="filterData" stripe style="width: 100%">
+            <el-table :data="filterData" :default-sort="{ prop: 'ID', order: 'descending' }" stripe style="width: 100%">
                 <el-table-column sortable prop="ID" label="ID" width="100" />
                 <el-table-column sortable label="标题" width="300">
                     <template v-slot="scope">

@@ -12,6 +12,7 @@ type User struct {
 	Email              string `gorm:"not null"`
 	Telephone          string
 	Gender             string `gorm:"not null"`
+	IsAdmin            bool   `gorm:"DEFAULT false"`
 	jwt.StandardClaims `gorm:"-"`
 }
 
@@ -24,4 +25,8 @@ func GetUserByName(name string) *User {
 	user := User{}
 	DB.Where("name=?", name).First(&user)
 	return &user
+}
+
+func (user *User) VerifyAdmin() bool {
+	return user.IsAdmin
 }

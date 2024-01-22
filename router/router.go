@@ -30,13 +30,11 @@ func StartRouter() {
 			category.GET("/:id", controller.GetCategory)                   // 获取分类信息
 			category.GET("/:id/list", controller.GetArticleListByCategory) // 根据分类id获取文章列表
 		}
-
 		tag := base.Group("/tag")
 		{
 			tag.GET("/:id", controller.GetTag)                   // 获取标签信息
 			tag.GET("/:id/list", controller.GetArticleListByTag) // 根据标签id获取文章列表
 		}
-
 		article := base.Group("/article")
 		{
 			article.GET("/:id", controller.GetArticle)                      // 获取文章信息
@@ -44,14 +42,13 @@ func StartRouter() {
 			article.GET("/:id/tag", controller.GetTagByArticle)             // 根据文章id获取标签名称列表
 			article.GET("/:id/tagid", controller.GetTagIDByArticle)         // 根据文章id获取标签id列表
 		}
-
 		user := base.Group("/user")
 		{
 			user.GET("/:id", controller.GetUser) // 获取用户名称
 		}
 	}
 
-	// 需要鉴权的接口
+	// 需要登录的接口
 	base.Use(middleware.AuthLogin)
 	{
 		user := base.Group("/user")
@@ -61,28 +58,29 @@ func StartRouter() {
 			user.PUT("/password", controller.UpdatePassword) // 修改用户密码
 			user.DELETE("", controller.DeleteUser)           // 删除用户
 		}
+		comment := base.Group("/comment")
+		{
+			comment.POST("", controller.PushComment)         // 发布新评论
+			comment.DELETE("/:id", controller.DeleteComment) // 删除评论
+		}
 
+	}
+	// 以下是需要管理员权限的接口
+	base.Use(middleware.VerifyAdmin)
+	{
 		article := base.Group("/article")
 		{
 			article.POST("", controller.PushArticle)         // 发布新文章
 			article.PUT("", controller.ModifyArticle)        // 修改文章
 			article.DELETE("/:id", controller.DeleteArticle) // 删除文章
 		}
-
 		tag := base.Group("/tag")
 		{
 			tag.POST("", controller.CreateTag) // 创新新标签
 		}
-
 		category := base.Group("/category")
 		{
 			category.POST("", controller.CreateCategory) // 创建新分类
-		}
-
-		comment := base.Group("/comment")
-		{
-			comment.POST("", controller.PushComment)         // 发布新评论
-			comment.DELETE("/:id", controller.DeleteComment) // 删除评论
 		}
 	}
 
