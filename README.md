@@ -6,3 +6,7 @@
 
 博客链接：[hitori.cn](www.hitori.cn)（未适配移动端）
 
+![image](https://github.com/blockcheDev/blog-web/assets/89156012/afb8b63b-88c9-423a-abfd-27b5a590a7b1)
+
+![image](https://github.com/blockcheDev/blog-web/assets/89156012/2961969d-f0a8-412b-b177-12b3659126ea)
+
