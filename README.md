@@ -16,6 +16,8 @@
 
 本项目是本人的第一个web项目，项目还在不断迭代中。前端界面主打一个简洁但不简陋，做了一些动效设计，后端在能力范围内尽可能做到高安全、优性能。
 
+项目结构：根目录为golang后端项目，根目录中的web文件夹内为vue3前端项目。
+
 后端：
 
 - 使用JWT鉴权
@@ -48,6 +50,31 @@
 - Element Plus
 - Axios
 - Nginx
+
+## 启动项目
+
+需要安装Golang、Node.js、MySQL、Redis环境
+
+后端项目运行：
+
+```shell
+# 项目根目录
+go mod tidy
+go run main.go
+```
+
+前端项目运行：
+
+```shell
+# 进入web目录
+cd ./web
+
+# 安装依赖
+npm install
+
+# 运行
+npm run dev
+```
 
 
 
