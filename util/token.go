@@ -8,7 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-var jwtkey = []byte("blockche@qq.com")
+var jwtkey = []byte("blockche@qq.com, hiblockche@gmail.com")
 
 func keyFunc(t *jwt.Token) (interface{}, error) {
 	return jwtkey, nil

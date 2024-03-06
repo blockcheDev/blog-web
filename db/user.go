@@ -16,6 +16,8 @@ type User struct {
 	jwt.StandardClaims `gorm:"-"`
 }
 
+
+
 func GetUser(ID any) *User {
 	user := User{}
 	DB.Where("id=?", ID).First(&user)
@@ -26,7 +28,6 @@ func GetUserByName(name string) *User {
 	DB.Where("name=?", name).First(&user)
 	return &user
 }
-
 func (user *User) VerifyAdmin() bool {
 	return user.IsAdmin
 }

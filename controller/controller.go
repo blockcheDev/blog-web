@@ -74,6 +74,9 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	// 密码加盐
+	u.Password = util.HashPassword(u.Password)
+
 	res = db.DB.Create(&u)
 	if res.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -114,65 +117,3 @@ func Register(c *gin.Context) {
 // 		})
 // 	}
 // }
-
-func GetUserInfo(c *gin.Context) {
-	claim, err := util.ParseToken(c.Request.Header.Get("token"))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"msg": "token解析失败",
-		})
-		return
-	}
-
-	name := claim.Name
-	u := db.User{}
-	res := db.DB.Where("name = ?", name).First(&u)
-	if res.RowsAffected == 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": "获取数据库信息失败",
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, u)
-}
-
-func UpdateUserInfo(c *gin.Context) {
-	fmt.Println(c.Request)
-	claim, _ := util.ParseToken(c.GetHeader("token"))
-	name := claim.Name
-	user := db.User{}
-	db.DB.Where("name=?", name).First(&user)
-	c.ShouldBind(&user)
-	db.DB.Save(&user)
-
-	c.JSON(http.StatusOK, gin.H{
-		"msg": "修改成功",
-	})
-}
-func UpdatePassword(c *gin.Context) {
-	claim, _ := util.ParseToken(c.GetHeader("token"))
-	name := claim.Name
-	user := db.User{}
-	db.DB.Where("name=?", name).First(&user)
-	form := struct {
-		OldPassword string
-		NewPassword string
-	}{}
-	c.ShouldBind(&form)
-
-	fmt.Println(form)
-
-	if form.OldPassword != user.Password {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"msg": "原密码错误",
-		})
-		return
-	}
-
-	user.Password = form.NewPassword
-	db.DB.Save(&user)
-	c.JSON(http.StatusOK, gin.H{
-		"msg": "密码修改成功",
-	})
-}

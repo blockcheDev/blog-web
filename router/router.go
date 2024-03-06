@@ -44,7 +44,7 @@ func StartRouter() {
 		}
 		user := base.Group("/user")
 		{
-			user.GET("/:id", controller.GetUser) // 获取用户名称
+			user.GET("/:id", controller.GetUserName) // 获取用户名称
 		}
 	}
 
@@ -54,8 +54,8 @@ func StartRouter() {
 		user := base.Group("/user")
 		{
 			user.GET("", controller.GetUserInfo)             // 获取用户信息
-			user.PUT("", controller.UpdateUserInfo)          // 更新用户信息
-			user.PUT("/password", controller.UpdatePassword) // 修改用户密码
+			user.PUT("", controller.ModifyUserInfo)          // 修改用户信息
+			user.PUT("/password", controller.ModifyPassword) // 修改用户密码
 			user.DELETE("", controller.DeleteUser)           // 删除用户
 		}
 		comment := base.Group("/comment")

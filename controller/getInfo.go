@@ -8,7 +8,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetUser(c *gin.Context) {
+func GetUserInfo(c *gin.Context) {
+	claim, err := util.ParseToken(c.Request.Header.Get("token"))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"msg": "token解析失败",
+		})
+		return
+	}
+
+	name := claim.Name
+	u := db.User{}
+	res := db.DB.Where("name = ?", name).First(&u)
+	if res.RowsAffected == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "获取数据库信息失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, u)
+}
+func GetUserName(c *gin.Context) {
 	id := c.Param("id")
 	if id == "0" {
 		claim, err := util.ParseToken(c.Request.Header.Get("token"))

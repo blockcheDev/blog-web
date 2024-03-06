@@ -6,17 +6,22 @@ import (
 	"webback/util"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func DeleteUser(c *gin.Context) {
 	claim, _ := util.ParseToken(c.GetHeader("token"))
 	name := claim.Name
 
-	user := db.User{}
-	c.ShouldBind(&user)
+	user := &db.User{}
+	err := c.ShouldBind(user)
+	if err != nil {
+		logrus.Error("err:", err.Error())
+	}
 
-	res := db.DB.Where("name=? and password=?", name, user.Password).First(&user)
-	if res.RowsAffected == 0 {
+	// res := db.DB.Where("name=? and password=?", name, user.Password).First(&user)
+	user = util.AuthUserAndPassword(name, user.Password)
+	if user == nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"msg": "密码错误",
 		})
