@@ -23,7 +23,9 @@ export default {
   createCategory: (data: any) => request.post(`/api/category`, data),
   pushComment: (data: any) => request.post("/api/comment", data),
 
-  deleteUser: (data: any) => request.delete(`/api/user`, data),
+  // deleteUser: (data: any) => request.delete(`/api/user`, {data: data}),
+  deleteUser: (data: any) => request({url: `/api/user`, method: 'delete', data: data}), // 删除用户
+
   deleteArticle: (id: any) => request.delete(`/api/article/${id}`),
   deleteComment: (id: any) => request.delete(`/api/comment/${id}`),
 
