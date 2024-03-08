@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -12,7 +13,7 @@ func InitDatabase() {
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("failed to connect database")
+		logrus.Errorf("failed to connect database, err: %v", err)
 	}
 
 	DB.AutoMigrate(&User{})
