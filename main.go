@@ -7,5 +7,6 @@ import (
 
 func main() {
 	db.InitDatabase()
+	db.InitRedis()
 	router.StartRouter()
 }

@@ -6,11 +6,11 @@ import * as store from '@/store/article';
 import api from '@/api/api';
 import router from '@/router';
 
-const comp = (a: Article, b: Article) => {
-    if (a.CreatedAt > b.CreatedAt) return -1;
-    if (a.CreatedAt < b.CreatedAt) return 1;
-    return 0;
-}
+// const comp = (a: Article, b: Article) => {
+//     if (a.CreatedAt > b.CreatedAt) return -1;
+//     if (a.CreatedAt < b.CreatedAt) return 1;
+//     return 0;
+// }
 onMounted(async () => {
     try {
         const res = await api.getArticle("all")
@@ -19,7 +19,7 @@ onMounted(async () => {
     } catch (err) {
         console.error(err)
     }
-    list.sort(comp)
+    // list.sort(comp)
     for (var i = 0; i < list.length; i++) {
         const atc = list[i]
         try {

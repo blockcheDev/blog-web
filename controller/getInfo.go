@@ -1,11 +1,14 @@
 package controller
 
 import (
+	"context"
+	"encoding/json"
 	"net/http"
 	"webback/db"
 	"webback/util"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func GetUserInfo(c *gin.Context) {
@@ -49,9 +52,34 @@ func GetUserName(c *gin.Context) {
 }
 func GetArticle(c *gin.Context) {
 	id := c.Param("id")
+	// id为all时返回所有文章
 	if id == "all" {
+		// 先从redis中获取
+		// _, _ = db.RDB.Del(context.Background(), "article:all").Result()
+		res, _ := db.RDB.ZRevRange(context.Background(), "article:all", 0, -1).Result()
+		if len(res) == 0 {
+			// redis中没有，从mysql中载入缓存
+			logrus.Info("redis中没有，从mysql中载入缓存")
+			articles := db.Articles{}
+			db.DB.Find(&articles)
+			articles.LoadIntoRedis()
+
+			// 再从redis中获取一次
+			res, _ = db.RDB.ZRevRange(context.Background(), "article:all", 0, -1).Result()
+			if len(res) == 0 {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"msg": "获取文章列表失败",
+				})
+				return
+			}
+		}
+		// 从redis中获取成功
 		articles := []db.Article{}
-		db.DB.Find(&articles)
+		for _, v := range res {
+			article := db.Article{}
+			json.Unmarshal([]byte(v), &article)
+			articles = append(articles, article)
+		}
 		c.JSON(http.StatusOK, articles)
 	} else {
 		article := db.GetArticle(id)
