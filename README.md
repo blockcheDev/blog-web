@@ -4,7 +4,7 @@
 
 ## 在线预览
 
-博客链接：[hitori.cn](www.hitori.cn)（未适配移动端）
+博客链接：[hitori.cn](www.hitori.cn)（已配置ssl，可使用https访问）
 
 ![image](https://github.com/blockcheDev/blog-web/assets/89156012/afb8b63b-88c9-423a-abfd-27b5a590a7b1)
 
@@ -84,3 +84,47 @@ npm run dev
 
 
 
+### 开发问题日志
+
+#### 配置ssl后，使用https前端无法访问http后端接口
+
+下载ssl证书，在Nginx的nginx.conf上配置443端口服务后，就可以访问到前端了。
+
+```conf
+    # HTTPS server
+    server {
+       listen       443 ssl;
+       server_name  hitori.cn;
+
+       ssl_certificate      /usr/local/nginx/conf/cert/hitori.cn.pem;
+       ssl_certificate_key  /usr/local/nginx/conf/cert/hitori.cn.key;
+
+       ssl_session_cache    shared:SSL:1m;
+       ssl_session_timeout  5m;
+
+       ssl_ciphers  HIGH:!aNULL:!MD5;
+       ssl_prefer_server_ciphers  on;
+
+        # https代理到http后端服务,注意前端访问后端的地址要改为https://www.hitori.cn/api
+       location /api {
+            proxy_pass http://www.hitori.cn:8080/api;
+        }
+
+       location / {
+           root   /usr/local/blog-web/dist;
+           index  index.html index.htm;
+           try_files $uri $uri/ /index.html;
+       }
+    }
+```
+
+需要注意的是，由于前端是https，浏览器是不允许访问后端的http接口的，所以我们还需要用Nginx将https的请求反向代理到后端的http接口，即加上这段配置：
+
+```
+        # https代理到http后端服务,注意前端访问后端的地址要改为https://www.hitori.cn/api
+       location /api {
+            proxy_pass http://www.hitori.cn:8080/api;
+        }
+```
+
+添加这段配置后，当前端访问 https://www.hitori.cn/api 时，Nginx会将其代理到 http://www.hitori.cn:8080/api ，所以前端axios的后端地址配置也要修改为https方式了。
