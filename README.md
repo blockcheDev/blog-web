@@ -4,7 +4,7 @@
 
 ## 在线预览
 
-博客链接：[hitori.cn](www.hitori.cn)（已配置ssl，可使用https访问）
+博客链接：[hitori.cn](https://www.hitori.cn)（已配置ssl，可使用https访问）
 
 ![image](https://github.com/blockcheDev/blog-web/assets/89156012/afb8b63b-88c9-423a-abfd-27b5a590a7b1)
 
