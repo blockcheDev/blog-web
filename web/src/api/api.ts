@@ -32,6 +32,7 @@ export default {
 
   modifyArticle: (data: any) => request.put("/api/article", data),
 
+  // 使用github登录
   loginWithGithub: (code: string) =>
-    request.get(`/api/login/github?code=${code}`), // 使用github登录
+    request.get(`/api/login/github?code=${code}`),
 };

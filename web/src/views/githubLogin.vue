@@ -17,6 +17,7 @@ const text = ref("请稍等 OvO")
 
 onMounted(async () => {
     const code = <string>route.query.code
+    console.log(code)
     try {
         const res = await api.loginWithGithub(code)
         localStorage.setItem("token", res.headers.token)
@@ -26,10 +27,10 @@ onMounted(async () => {
         }, 1500)
     } catch (err) {
         text.value = "对不起，你能重试一下吗 >_<"
+        console.error(err)
         setTimeout(() => {
             router.push("/login")
         }, 1500)
-        console.error(err)
     }
 })
 </script>
