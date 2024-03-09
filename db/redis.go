@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"webback/config"
 
 	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
@@ -12,15 +13,17 @@ var (
 	ctx = context.Background()
 )
 
-func InitRedis() {
+func InitRedis() (err error) {
 	RDB = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", //没有密码
-		DB:       0,  // use default DB
+		Addr:     config.Conf.Redis.Address,
+		Password: config.Conf.Redis.Password,
+		DB:       config.Conf.Redis.Database,
 	})
 
-	_, err := RDB.Ping(ctx).Result()
+	_, err = RDB.Ping(ctx).Result()
 	if err != nil {
 		logrus.Errorf("redis连接失败, err: %v", err)
+		return
 	}
+	return
 }

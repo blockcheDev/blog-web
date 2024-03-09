@@ -4,6 +4,11 @@ import { drawerMenu } from "@/store/store";
 
 const routes = [
   {
+    path: "/oauth/redirect",
+    name: "GitHub登录等待",
+    component: () => import("../views/githubLogin.vue"),
+  },
+  {
     path: "/",
     // 重定向
     // redirect: '/welcome',

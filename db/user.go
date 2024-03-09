@@ -12,20 +12,25 @@ type User struct {
 	Email              string `gorm:"not null"`
 	Telephone          string
 	Gender             string `gorm:"not null"`
-	IsAdmin            bool   `gorm:"DEFAULT false"`
+	AvaterUrl          string
+	IsAdmin            bool `gorm:"DEFAULT false"`
 	jwt.StandardClaims `gorm:"-"`
 }
 
-
-
 func GetUser(ID any) *User {
 	user := User{}
-	DB.Where("id=?", ID).First(&user)
+	res := DB.Where("id=?", ID).First(&user)
+	if res.RowsAffected == 0 {
+		return nil
+	}
 	return &user
 }
 func GetUserByName(name string) *User {
 	user := User{}
-	DB.Where("name=?", name).First(&user)
+	res := DB.Where("name=?", name).First(&user)
+	if res.RowsAffected == 0 {
+		return nil
+	}
 	return &user
 }
 func (user *User) VerifyAdmin() bool {

@@ -1,16 +1,120 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"webback/config"
 	"webback/db"
 	"webback/util"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func ToHome(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/home")
+}
+
+func LoginWithGithub(c *gin.Context) {
+	code := c.Query("code")
+	if code == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"msg": "登录失败，code为空",
+		})
+		return
+	}
+	// 获取access_token
+	client_id := config.Conf.Github.ClientID
+	client_secret := config.Conf.Github.ClientSecret
+	url := fmt.Sprintf("https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s", client_id, client_secret, code)
+	req, _ := http.NewRequest("POST", url, nil)
+	req.Header.Set("Accept", "application/json")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		logrus.Errorf("获取access_token失败, err: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "登录失败，获取access_token失败",
+		})
+		return
+	}
+	github := struct {
+		AccessToken string `json:"access_token"`
+	}{}
+	if err := json.NewDecoder(res.Body).Decode(&github); err != nil {
+		logrus.Errorf("解析access_token失败, err: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "登录失败，解析access_token失败",
+		})
+		return
+	}
+	res.Body.Close()
+	logrus.Infof("access_token: %s", github.AccessToken)
+
+	// 获取用户信息
+	req, _ = http.NewRequest("GET", "https://api.github.com/user", nil)
+	req.Header.Set("Authorization", "token "+github.AccessToken)
+	req.Header.Set("Accept", "application/json")
+	res, err = http.DefaultClient.Do(req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "登录失败，获取用户信息失败",
+		})
+		return
+	}
+	githubUser := struct {
+		ID        uint   `json:"id"`
+		Login     string `json:"login"`
+		AvatarUrl string `json:"avatar_url"`
+		Email     string `json:"email"`
+	}{}
+	if err := json.NewDecoder(res.Body).Decode(&githubUser); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "登录失败，解析用户信息失败",
+		})
+		return
+	}
+	res.Body.Close()
+	logrus.Infof("githubUser: %#v", githubUser)
+	if githubUser.ID == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "登录失败，获取用户信息失败",
+		})
+		return
+	}
+
+	// 开始登录
+	name := "github_" + githubUser.Login
+	user := db.GetUserByName(name)
+	if user == nil {
+		// 初次登录，自动注册
+		user := &db.User{
+			Name:      name,
+			Password:  "",
+			Email:     githubUser.Email,
+			AvaterUrl: githubUser.AvatarUrl,
+			Gender:    "未知",
+		}
+		res := db.DB.Create(&user)
+		if res.RowsAffected == 0 {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"msg": "登录失败，自动注册失败",
+			})
+			return
+		}
+		user = db.GetUserByName(name)
+	}
+	tokenString, err := util.GenerateToken(user.Name)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "登录失败，生成token失败",
+		})
+		return
+	}
+	c.Header("token", tokenString)
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "登录成功",
+	})
 }
 
 func Login(c *gin.Context) {
@@ -24,7 +128,7 @@ func Login(c *gin.Context) {
 	}
 	if user.Name == "" || user.Password == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"msg": "信息为空",
+			"msg": "用户名或密码不能为空",
 		})
 		return
 	}

@@ -22,7 +22,7 @@
 
 - 用户身份使用JWT鉴权，使用HS256签名算法，保证token不可被伪造。
 - 数据库存储密码前使用bcrypt算法给密码加盐，防止彩虹表破解。
-- 拥有管理员、普通用户两种权限
+- 可以使用Github授权登录博客。
 - 高频调用使用Redis优化性能：缓存文章列表
 - 防SQL注入（待实现）
 
@@ -128,3 +128,17 @@ npm run dev
 ```
 
 添加这段配置后，当前端访问 https://www.hitori.cn/api 时，Nginx会将其代理到 http://www.hitori.cn:8080/api ，所以前端axios的后端地址配置也要修改为https方式了。
+
+#### 接入Github OAuth授权登录
+
+1. 向Github发送post请求获取access_token时，需要在header设置"Accept"为"application/json"，这样Github才会返回json格式的数据，否则默认是无格式的字符串。
+
+```go
+// 获取access_token
+url := fmt.Sprintf("https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s", client_id, client_secret, code)
+req, _ := http.NewRequest("POST", url, nil)
+req.Header.Set("Accept", "application/json")
+res, err := http.DefaultClient.Do(req)
+// res.Body内就是json数据
+```
+

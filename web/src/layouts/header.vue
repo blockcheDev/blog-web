@@ -2,7 +2,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; height: 100%; width: 100%;">
         <div class="header-title" style="display: flex; align-items: center;" @click="goToHome()">
             <Notebook style="width: 1.3em; margin-right: 0.4em;" />
-            <span>个人博客系统</span>
+            <span>blockche blog</span>
         </div>
         <div style="display: flex; align-items: center;">
             <!-- QQ图标 -->

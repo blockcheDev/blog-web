@@ -24,10 +24,14 @@ export default {
   pushComment: (data: any) => request.post("/api/comment", data),
 
   // deleteUser: (data: any) => request.delete(`/api/user`, {data: data}),
-  deleteUser: (data: any) => request({url: `/api/user`, method: 'delete', data: data}), // 删除用户
+  deleteUser: (data: any) =>
+    request({ url: `/api/user`, method: "delete", data: data }), // 删除用户
 
   deleteArticle: (id: any) => request.delete(`/api/article/${id}`),
   deleteComment: (id: any) => request.delete(`/api/comment/${id}`),
 
   modifyArticle: (data: any) => request.put("/api/article", data),
+
+  loginWithGithub: (code: string) =>
+    request.get(`/api/login/github?code=${code}`), // 使用github登录
 };

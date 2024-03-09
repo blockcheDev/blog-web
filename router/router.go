@@ -22,8 +22,9 @@ func StartRouter() {
 				"msg": "成功访问后端",
 			})
 		})
-		base.POST("/register", controller.Register) // 用户注册
-		base.POST("/login", controller.Login)       // 用户登录
+		base.POST("/register", controller.Register)           // 用户注册
+		base.POST("/login", controller.Login)                 // 用户登录
+		base.GET("/login/github", controller.LoginWithGithub) // 使用github登录
 
 		category := base.Group("/category")
 		{

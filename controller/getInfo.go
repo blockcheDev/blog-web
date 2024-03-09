@@ -21,11 +21,10 @@ func GetUserInfo(c *gin.Context) {
 	}
 
 	name := claim.Name
-	u := db.User{}
-	res := db.DB.Where("name = ?", name).First(&u)
-	if res.RowsAffected == 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": "获取数据库信息失败",
+	u := db.GetUserByName(name)
+	if u == nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"msg": "获取用户信息失败",
 		})
 		return
 	}
@@ -45,6 +44,9 @@ func GetUserName(c *gin.Context) {
 		})
 	} else {
 		user := db.GetUser(id)
+		if user == nil {
+			user = &db.User{}
+		}
 		c.JSON(http.StatusOK, gin.H{
 			"Name": user.Name,
 		})

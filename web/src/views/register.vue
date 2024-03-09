@@ -6,16 +6,17 @@
         <el-card>
             <el-form :model="form" label-width="120px">
                 <el-form-item label="用户名">
-                    <el-input v-model="form.Name" />
+                    <el-input class="input" v-model="form.Name" />
                 </el-form-item>
                 <el-form-item label="密码">
-                    <el-input v-model="form.Password" type="password" show-password />
+                    <el-input class="input" v-model="form.Password" type="password" show-password />
                 </el-form-item>
                 <el-form-item label="邮箱">
-                    <el-input v-model="form.Email" />
+                    <el-input class="input" v-model="form.Email" />
                 </el-form-item>
                 <el-form-item label="手机号码">
-                    <el-input v-model="form.Telephone" />
+                    <el-input class="input" v-model="form.Telephone" />
+                    <span style="color: gray; margin-left: 1em;">*非必填</span>
                 </el-form-item>
                 <el-form-item label="性别">
                     <el-radio-group v-model="form.Gender">
@@ -32,7 +33,7 @@
         </el-card>
     </div>
 </template>
-  
+
 <script lang="ts" setup>
 import api from '@/api/api';
 import router from '@/router';
@@ -40,13 +41,12 @@ import { reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import PageHeader from '@/layouts/PageHeader.vue';
 
-// do not use same name with ref
 const form = reactive({
     Name: '',
     Password: '',
     Email: '',
     Telephone: '',
-    Gender: '',
+    Gender: "未知",
 })
 
 const onSubmit = async () => {
@@ -63,4 +63,9 @@ const goToLogin = () => {
     router.push("/login")
 }
 </script>
-  
+
+<style>
+.input {
+    width: 15vw;
+}
+</style>

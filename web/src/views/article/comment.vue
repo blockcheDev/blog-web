@@ -10,7 +10,7 @@ const formatDate = (date: any) => {
 
 const prop = defineProps(['articleID']);
 
-const comment: Comment = reactive({})
+const comment: Partial<Comment> = reactive({})
 const pushComment = async () => {
     comment.ArticleID = Number(prop.articleID);
     try {
@@ -29,6 +29,7 @@ const list: Comment[] = reactive([])
 onMounted(async () => {
     try {
         const res = await api.getCommentListByArticle(prop.articleID)
+        console.log(res.data)
         Object.assign(list, res.data)
     } catch (err) {
         console.error(err)
@@ -75,8 +76,9 @@ const deleteComment = async (id: any) => {
                 <div style="display: flex; align-items: center;">
                     <el-tag size="small">#{{ cmt.Floor }}楼</el-tag>
                     <span style="font-size: 1.1em; margin-left: 1em;">{{ cmt.UserName === "" ? "账号已注销" : cmt.UserName
-                    }}</span>
-                    <span style="font-size: 1.1em; color: gray; margin-left: 0.5em;">{{ formatDate(cmt.CreatedAt) }}</span>
+                        }}</span>
+                    <span style="font-size: 1.1em; color: gray; margin-left: 0.5em;">{{ formatDate(cmt.CreatedAt)
+                        }}</span>
                     <el-button v-if="cmt.UserName === userInfo.Name" link style="margin-left: 0.5em;"
                         @click="deleteComment(cmt.ID)">删除</el-button>
                 </div>

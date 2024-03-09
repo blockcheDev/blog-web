@@ -1,19 +1,25 @@
 package db
 
 import (
+	"fmt"
+	"webback/config"
+
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var (
+	DB *gorm.DB
+)
 
-func InitDatabase() {
-	dsn := "blockche:1234@tcp(127.0.0.1:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"
-	var err error
+func InitMysql() (err error) {
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", config.Conf.Mysql.User, config.Conf.Mysql.Password, config.Conf.Mysql.Address, config.Conf.Mysql.Database)
+	logrus.Infof("dsn:%s", dsn)
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logrus.Errorf("failed to connect database, err: %v", err)
+		return
 	}
 
 	DB.AutoMigrate(&User{})
@@ -23,7 +29,5 @@ func InitDatabase() {
 	DB.AutoMigrate(&Tag{})
 	DB.AutoMigrate(&Category{})
 	DB.AutoMigrate(&Comment{})
-	// db.Create(&User{Name: "blockche", Password: "123456"})
-	// DB.Create(&Article{Content: "# test"})
-	// DB.Create(&Category{Name: "默认分类"})
+	return
 }

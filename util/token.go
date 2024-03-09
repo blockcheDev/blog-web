@@ -4,17 +4,18 @@ import (
 	"errors"
 	"fmt"
 	"time"
+	"webback/config"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-var jwtkey = []byte("blockche@qq.com, hiblockche@gmail.com")
+var jwtkey = []byte(config.Conf.JWT.Key)
 
 func keyFunc(t *jwt.Token) (interface{}, error) {
 	return jwtkey, nil
 }
 
-const TokenExpireDuration = time.Hour * 2
+const TokenExpireDuration = time.Hour * 24
 
 type MyClaims struct {
 	Name string
