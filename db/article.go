@@ -65,7 +65,7 @@ func (articles Articles) LoadIntoRedis() (err error) {
 		}
 		_, err = RDB.ZAdd(context.Background(), "article:all", redis.Z{
 			Score:  float64(article.CreatedAt.Unix()),
-			Member: string(j),
+			Member: j,
 		}).Result()
 		if err != nil {
 			return err

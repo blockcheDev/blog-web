@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"webback/config"
 	"webback/db"
 	"webback/util"
@@ -159,21 +160,28 @@ func Register(c *gin.Context) {
 
 	if u.Name == "" || u.Password == "" || u.Email == "" || u.Gender == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"msg": "注册失败，信息不能为空",
+			"msg": "信息不能为空",
 		})
 		return
 	}
 	// if m, _ := regexp.MatchString(`^([\w\.\_]{2,10})@(\w{1,})\.([a-z]{2,4})$`, u.Email); !m {
 	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"msg": "注册失败，邮箱格式错误",
+	// 		"msg": "邮箱格式错误",
 	// 	})
 	// 	return
 	// }
 
+	if strings.HasPrefix(u.Name, "github_") {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"msg": "用户名不能以github_开头",
+		})
+		return
+	}
+
 	res := db.DB.Where("name = ?", u.Name).First(&db.User{})
 	if res.RowsAffected != 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"msg": "注册失败，用户名已存在",
+			"msg": "用户名已存在",
 		})
 		return
 	}
