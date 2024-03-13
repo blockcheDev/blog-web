@@ -49,4 +49,22 @@ import index from './layouts/index.vue';
 .v-leave-from {
   opacity: 1;
 }
+
+/* 以下四个样式的作用：使滚动条出现时保持页面不偏移 */
+html {
+  overflow-y: scroll;
+}
+
+:root {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* :root body {
+  position: absolute;
+} */
+body {
+  width: 100vw;
+  overflow: hidden;
+}
 </style>
