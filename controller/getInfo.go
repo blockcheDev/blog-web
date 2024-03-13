@@ -57,9 +57,8 @@ func GetArticle(c *gin.Context) {
 	// id为all时返回所有文章
 	if id == "all" {
 		// 先从redis中获取
-		// _, _ = db.RDB.Del(context.Background(), "article:all").Result()
 		res, _ := db.RDB.ZRevRange(context.Background(), "article:all", 0, -1).Result()
-		if len(res) == 0 {
+		if len(res) == 0 { 
 			// redis中没有，从mysql中载入缓存
 			logrus.Info("redis中没有，从mysql中载入缓存")
 			articles := db.Articles{}

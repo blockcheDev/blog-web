@@ -12,7 +12,7 @@ import (
 type Article struct {
 	gorm.Model
 
-	CategoryID uint `gorm:"not null"`
+	CategoryID uint `gorm:"not null; index:category_id"`
 	UserID     uint `gorm:"not null"`
 
 	Title   string `gorm:"not null"`
@@ -24,8 +24,8 @@ type Articles []Article
 
 type ArticleTag struct {
 	gorm.Model
-	ArticleID uint `gorm:"not null"`
-	TagID     uint `gorm:"not null"`
+	ArticleID uint `gorm:"not null; index:idx1,priority:1; index:idx2,priority:2"`
+	TagID     uint `gorm:"not null; index:idx1,priority:2; index:idx2,priority:1"`
 }
 
 type ArticleCategory struct {

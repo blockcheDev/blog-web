@@ -1,6 +1,6 @@
 ## 博客简介
 
-基于Golang后端、Vue3前端的前后端分离全栈博客项目。后端技术栈包括Golang、Gin、Gorm、MySQL等。前端技术栈包括Vue3、TypeScript、Axios、Element Plus等。
+基于Golang后端、Vue3前端的前后端分离全栈博客项目。后端技术栈包括Golang、Gin、Gorm、MySQL、Redis等。前端技术栈包括Vue3、TypeScript、Axios、Element Plus等。
 
 ## 在线预览
 

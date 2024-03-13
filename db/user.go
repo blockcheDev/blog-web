@@ -7,8 +7,8 @@ import (
 
 type User struct {
 	gorm.Model
-	Name               string `gorm:"not null"`
-	Password           string `gorm:"not null"`
+	Name               string `gorm:"not null; index:idx_name_password,priority:1"`
+	Password           string `gorm:"not null; index:idx_name_password,priority:2"`
 	Email              string `gorm:"not null"`
 	Telephone          string
 	Gender             string `gorm:"not null"`
