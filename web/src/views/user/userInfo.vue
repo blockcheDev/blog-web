@@ -6,7 +6,8 @@
         <el-card style="width: 60vw;">
             <div style="display: flex;">
                 <div style="margin: 7vh; display: flex; flex-flow: column;">
-                    <el-avatar :size="250" src="https://avatars.githubusercontent.com/u/89156012?v=4" />
+                    <!-- <el-avatar :size="250" src="https://avatars.githubusercontent.com/u/89156012?v=4" /> -->
+                    <el-avatar :size="250" :src=user.AvatarUrl />
                     <div style="margin-top: 1em;">
                         <span style=" font-size: 1.5em; font-weight: bold;">{{ user.Name }}</span>
                         <span style=" font-size: 1.3em; color: gray;"> ID:{{ user.ID }}</span>
@@ -75,12 +76,16 @@ const user = reactive({
     Email: "",
     Telephone: "",
     Gender: "",
+    AvatarUrl: "",
 })
 
 onMounted(async () => {
     try {
         const res = await api.getUser()
         Object.assign(user, res.data)
+        if (user.AvatarUrl === "") {
+            user.AvatarUrl = "/avatar.png"
+        }
     } catch (err) {
         console.error("获取用户信息失败", err)
     }
