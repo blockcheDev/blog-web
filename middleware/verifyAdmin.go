@@ -9,7 +9,13 @@ import (
 )
 
 func VerifyAdmin(c *gin.Context) {
-	claim, _ := util.ParseToken(c.GetHeader("token"))
+	claim, err := util.ParseToken(c.GetHeader("token"))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"msg": "token解析失败",
+		})
+		c.Abort()
+	}
 	user := db.GetUserByName(claim.Name)
 
 	if !user.VerifyAdmin() {

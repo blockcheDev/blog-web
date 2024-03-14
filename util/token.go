@@ -2,11 +2,11 @@ package util
 
 import (
 	"errors"
-	"fmt"
 	"time"
 	"webback/config"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/sirupsen/logrus"
 )
 
 var jwtkey = []byte(config.Conf.JWT.Key)
@@ -37,7 +37,7 @@ func GenerateToken(name string) (string, error) {
 func ParseToken(tokenString string) (*MyClaims, error) {
 	t, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, keyFunc)
 	if err != nil {
-		fmt.Println("error->", err.Error())
+		logrus.Errorf("ParseWithClaims error: %v", err)
 		return nil, err
 	}
 

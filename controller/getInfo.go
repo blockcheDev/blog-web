@@ -12,7 +12,9 @@ import (
 )
 
 func GetUserInfo(c *gin.Context) {
-	claim, err := util.ParseToken(c.Request.Header.Get("token"))
+	token := c.Request.Header.Get("token")
+	logrus.Info("token: ", token)
+	claim, err := util.ParseToken(token)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"msg": "token解析失败",
@@ -20,6 +22,7 @@ func GetUserInfo(c *gin.Context) {
 		return
 	}
 
+	logrus.Info("claim.Name: ", claim.Name)
 	name := claim.Name
 	u := db.GetUserByName(name)
 	if u == nil {
