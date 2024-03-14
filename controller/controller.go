@@ -93,7 +93,7 @@ func LoginWithGithub(c *gin.Context) {
 			Name:      name,
 			Password:  "",
 			Email:     githubUser.Email,
-			AvaterUrl: githubUser.AvatarUrl,
+			AvatarUrl: githubUser.AvatarUrl,
 			Gender:    "未知",
 		}
 		res := db.DB.Create(&user)
@@ -103,9 +103,13 @@ func LoginWithGithub(c *gin.Context) {
 			})
 			return
 		}
-		user = db.GetUserByName(name)
+	} else {
+		// 更新信息
+		user.Email = githubUser.Email
+		user.AvatarUrl = githubUser.AvatarUrl
+		db.DB.Save(&user)
 	}
-	tokenString, err := util.GenerateToken(user.Name)
+	tokenString, err := util.GenerateToken(name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": "登录失败，生成token失败",
@@ -134,9 +138,8 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	u := util.AuthUserAndPassword(user.Name, user.Password)
-	if u != nil {
-		tokenString, err := util.GenerateToken(u.Name)
+	if u := util.AuthUserAndPassword(user.Name, user.Password); u != nil {
+		tokenString, err := util.GenerateToken(user.Name)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"msg": "生成token失败",

@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"webback/db"
 	"webback/util"
@@ -11,7 +10,6 @@ import (
 )
 
 func ModifyUserInfo(c *gin.Context) {
-	fmt.Println(c.Request)
 	claim, _ := util.ParseToken(c.GetHeader("token"))
 	name := claim.Name
 	user := db.User{}
