@@ -13,7 +13,6 @@ import (
 
 func GetUserInfo(c *gin.Context) {
 	token := c.Request.Header.Get("token")
-	logrus.Info("token: ", token)
 	claim, err := util.ParseToken(token)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
