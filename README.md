@@ -24,7 +24,7 @@
 - 数据库存储密码前使用bcrypt算法给密码加盐，防止彩虹表破解。
 - 可以使用Github授权登录博客。
 - 高频调用使用Redis优化性能：缓存文章列表
-- 防SQL注入（待实现）
+- 防SQL注入[（原理看底下的开发问题日志）](#SQL)
 
 前端：
 
@@ -129,6 +129,8 @@ npm run dev
 
 添加这段配置后，当前端访问 https://www.hitori.cn/api 时，Nginx会将其代理到 http://www.hitori.cn:8080/api ，所以前端axios的后端地址配置也要修改为https方式了。
 
+
+
 #### 接入Github OAuth授权登录
 
 1. 向Github发送post请求获取access_token时，需要在header设置"Accept"为"application/json"，这样Github才会返回json格式的数据，否则默认是无格式的字符串。
@@ -142,3 +144,16 @@ res, err := http.DefaultClient.Do(req)
 // res.Body内就是json数据
 ```
 
+
+
+#### 关于防SQL注入<a id="SQL"></a>
+
+这是一个小插曲，本来已经做好自己写过滤模块的准备了，结果 bing 一搜发现 Gorm 本身就自带防 SQL 注入哈哈，省事了。
+
+**使用：**
+
+只要使用 Gorm API 自带的占位符拼接 SQL 语句，Gorm 就会使用预编译功能，即先传入带占位符的SQL语句，完成预编译，再传入参数。
+
+**原理：**
+
+数据库会先根据带占位符的SQL语句完成词法、语法、语义分析，生成语法树，此时语法树的结构已经固定了，再传入参数是无法改变语义的，就算参数是`1 or 1=1`也只会被当成普通字符串。
