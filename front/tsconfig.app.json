@@ -3,11 +3,13 @@
   "include": ["src/**/*.vue", "src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx", "global.d.ts", "auto-imports.d.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
+    "module": "ESNext",
     "composite": true,
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["vite/client"]
   }
 }

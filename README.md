@@ -53,6 +53,25 @@
 
 ## 启动项目
 
+### 现在可以使用docker-compose一键启动了
+
+#### 1. 要先补全缺少的配置（为了保密所以没有放上来）
+
+- server/config/config.yaml
+- deploy/mysql/blog.sql
+- deploy/web/hitori.cn.key
+- deploy/web/hitori.cn.pem
+
+#### 2. 一键启动
+
+```shell
+cd deploy
+docker-compose up --build
+```
+
+
+### 手动启动
+
 需要安装Golang、Node.js、MySQL、Redis环境
 
 后端项目运行：

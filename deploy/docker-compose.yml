@@ -1,0 +1,54 @@
+services:
+  redis:
+    image: redis:7.4
+    container_name: redis
+    restart: always
+    volumes:
+      - ${DATA_DIRECTORY}/data/redis/:/data
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    command: redis-server --appendonly yes
+
+  mysql:
+    build:
+      context: ../
+      dockerfile: ./deploy/mysql/Dockerfile
+    container_name: mysql
+    restart: always
+    volumes:
+      - ${DATA_DIRECTORY}/data/mysql:/var/lib/mysql
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+
+  server:
+    build:
+      context: ../
+      dockerfile: ./deploy/server/Dockerfile
+    container_name: server
+    restart: always
+    depends_on:
+      redis:
+        condition: service_started
+      mysql:
+        condition: service_started
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+
+  web:
+    build:
+      context: ../
+      dockerfile: ./deploy/web/Dockerfile
+    container_name: web
+    restart: always
+    volumes:
+      - ${DATA_DIRECTORY}/data/nginx/conf.d:/etc/nginx/conf.d
+      - ${DATA_DIRECTORY}/data/nginx/logs:/var/log/nginx
+    ports:
+      - 80:80
+      - 443:443
+      - 11111:11111

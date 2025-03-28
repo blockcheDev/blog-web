@@ -1,0 +1,38 @@
+{
+  "name": "web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build --force"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@kangc/v-md-editor": "^2.3.18",
+    "@vue/reactivity": "^3.5.13",
+    "axios": "^1.8.4",
+    "dayjs": "^1.11.13",
+    "element-plus": "^2.9.7",
+    "highlight.js": "^11.11.1",
+    "marked": "^11.2.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.4",
+    "@types/node": "^18.19.84",
+    "@vitejs/plugin-vue": "^4.6.2",
+    "@vue/tsconfig": "^0.4.0",
+    "npm-run-all2": "^6.2.6",
+    "prettier": "^3.5.3",
+    "sass": "^1.86.0",
+    "typescript": "~5.2.2",
+    "vite": "^5.4.15",
+    "vue-tsc": "^1.8.27"
+  },
+  "packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6"
+}
