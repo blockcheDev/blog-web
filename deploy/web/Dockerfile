@@ -1,8 +1,8 @@
 FROM node:23 AS node
 WORKDIR /usr/local/front
 COPY ./front/ ./
-# COPY ./front/.env.production ./
-RUN npm install -g pnpm \ 
+RUN npm config set registry https://registry.npmmirror.com \
+    && npm install -g pnpm \ 
     && pnpm install
 RUN pnpm build
 

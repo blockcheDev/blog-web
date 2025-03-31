@@ -4,10 +4,6 @@ const app = createApp(App);
 
 import "highlight.js/styles/foundation.css";
 
-import ElementPlus from "element-plus";
-import "element-plus/dist/index.css";
-app.use(ElementPlus);
-
 import router from "./router";
 app.use(router);
 
