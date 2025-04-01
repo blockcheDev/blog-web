@@ -61,6 +61,7 @@
 - deploy/mysql/blog.sql
 - deploy/web/hitori.cn.key
 - deploy/web/hitori.cn.pem
+- deploy/.env
 
 #### 2. 一键启动
 
