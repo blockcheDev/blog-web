@@ -2,3 +2,4 @@ blockche-blog
 mysql/*.sql
 web/*.key
 web/*.pem
+.env
