@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 const app = createApp(App);
 
+import 'element-plus/dist/index.css'
 import "highlight.js/styles/foundation.css";
 
 import router from "./router";
