@@ -52,6 +52,8 @@ services:
         condition: service_started
       mysql:
         condition: service_started
+    volumes:
+      - ${DATA_DIRECTORY}/data/server/logs:/app/logs
     environment:
       - TZ=Asia/Shanghai
     ports:

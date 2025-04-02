@@ -1,5 +1,5 @@
 FROM golang:1.24 AS builder
-WORKDIR /usr/local/server
+WORKDIR /app/server
 COPY ./server/ ./
 # CGO_ENABLED=0 静态链接
 RUN go env -w  GOPROXY=https://goproxy.cn,direct \
@@ -8,9 +8,9 @@ RUN go env -w  GOPROXY=https://goproxy.cn,direct \
 
 
 FROM alpine:3.21
-WORKDIR /usr/local
-COPY --from=builder /usr/local/server/server ./
-COPY --from=builder /usr/local/server/config/config.yaml ./config/
+WORKDIR /app
+COPY --from=builder /app/server/server ./
+COPY --from=builder /app/server/config/config.yaml ./config/
 
 EXPOSE 8080
 

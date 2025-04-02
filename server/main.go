@@ -1,14 +1,31 @@
 package main
 
 import (
+	"io"
+	"os"
 	"webback/config"
 	"webback/db"
 	"webback/router"
 
+	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
+func log_init() {
+	os.Mkdir("logs", 0755)
+	log_file, err := os.OpenFile("logs/today.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		logrus.Fatal("Failed to open log file:", err)
+	}
+	writer := io.MultiWriter(os.Stdout, log_file)
+	logrus.SetOutput(writer)
+	gin.DefaultWriter = writer
+}
+
 func main() {
+	// 初始化日志
+	log_init()
+
 	// 初始化配置，配置文件在./config/config.yaml，如果没有请参考viper.go文件自行创建
 	err := config.Init()
 	if err != nil {
