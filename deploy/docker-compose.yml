@@ -22,6 +22,24 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     ports:
       - ${MYSQL_PORT}:${MYSQL_PORT}
+  
+  backup-server:
+    build:
+      context: ../
+      dockerfile: ./deploy/backup-server/Dockerfile
+    container_name: backup-server
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_started
+    volumes:
+      - ${DATA_DIRECTORY}/data/backup-server/backups:/backups
+      - ${DATA_DIRECTORY}/data/backup-server/logs:/logs
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - COS_SECRET_ID=${COS_SECRET_ID}
+      - COS_SECRET_KEY=${COS_SECRET_KEY}
 
   server:
     build:
