@@ -5,6 +5,8 @@ services:
     restart: always
     volumes:
       - ${DATA_DIRECTORY}/data/redis/:/data
+    environment:
+      - TZ=Asia/Shanghai
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
     command: redis-server --appendonly yes
@@ -68,6 +70,8 @@ services:
     volumes:
       - ${DATA_DIRECTORY}/data/nginx/conf.d:/etc/nginx/conf.d
       - ${DATA_DIRECTORY}/data/nginx/logs:/var/log/nginx
+    environment:
+      - TZ=Asia/Shanghai
     ports:
       - 80:80
       - 443:443

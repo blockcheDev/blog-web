@@ -6,6 +6,7 @@ import (
 	"webback/config"
 	"webback/db"
 	"webback/router"
+	"webback/util"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -20,6 +21,9 @@ func log_init() {
 	writer := io.MultiWriter(os.Stdout, log_file)
 	logrus.SetOutput(writer)
 	gin.DefaultWriter = writer
+
+	// 启动日志归档异步任务
+	util.LogArchive()
 }
 
 func main() {
