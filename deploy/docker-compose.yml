@@ -12,13 +12,12 @@ services:
     command: redis-server --appendonly yes
 
   mysql:
-    build:
-      context: ../
-      dockerfile: ./deploy/mysql/Dockerfile
+    image: mysql:9
     container_name: mysql
     restart: always
     volumes:
       - ${DATA_DIRECTORY}/data/mysql:/var/lib/mysql
+      - ./mysql/blog.sql:/docker-entrypoint-initdb.d/blog.sql # SQL initialization file
     environment:
       - TZ=Asia/Shanghai
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
