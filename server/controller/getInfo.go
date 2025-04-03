@@ -94,6 +94,9 @@ func GetArticle(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusOK, article)
+
+		// 增加浏览量
+		article.IncreasePageViews()
 	}
 }
 func GetCategory(c *gin.Context) {

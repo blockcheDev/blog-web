@@ -63,7 +63,8 @@ services:
   web:
     build:
       context: ../
-      dockerfile: ./deploy/web/Dockerfile
+      dockerfile: ./deploy/web/Dockerfile # 生产环境
+      # dockerfile: ./deploy/web/DockerfileDev # 开发环境
     container_name: web
     restart: always
     volumes:

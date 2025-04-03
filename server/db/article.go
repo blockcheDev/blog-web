@@ -15,10 +15,11 @@ type Article struct {
 	CategoryID uint `gorm:"not null; index:category_id"`
 	UserID     uint `gorm:"not null"`
 
-	Title   string `gorm:"not null"`
-	Content string `gorm:"not null"`
-	Type    int8   `gorm:"not null"` //0-原创 1-转载
-	Tags    []uint `gorm:"-"`
+	Title     string `gorm:"not null"`
+	Content   string `gorm:"not null"`
+	Type      int8   `gorm:"not null"` //0-原创 1-转载
+	Tags      []uint `gorm:"-"`
+	PageViews uint64 `gorm:"default:0"` // 文章浏览量
 }
 type Articles []Article
 
@@ -38,6 +39,13 @@ func GetArticle(ID interface{}) *Article {
 	article := Article{}
 	DB.Where("id=?", ID).First(&article)
 	return &article
+}
+
+func (article *Article) IncreasePageViews() {
+	article.PageViews++
+	DB.Save(article)
+
+	// logrus.Infof("文章 %d 浏览量增加到 %d", article.ID, article.PageViews)
 }
 
 // 在创建、更新文章后，需要删除redis中的文章列表缓存
