@@ -14,7 +14,7 @@ func LogArchive() {
 	job := cron.New()
 
 	// 每天0点执行, 将昨天的日志归档
-	job.AddFunc("8-10 3 * * *", func() {
+	job.AddFunc("0 0 * * *", func() {
 		prev_day := time.Now().AddDate(0, 0, -1).Format("20060102")
 		src_file_path := "logs/today.log"
 		dst_file_path := fmt.Sprintf("logs/%s.log", prev_day)
