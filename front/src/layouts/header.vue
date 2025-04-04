@@ -22,7 +22,7 @@
 
             <!-- Github图标 -->
             <div style="margin-right: 1.5vw;">
-                <a href="https://github.com/blockcheDev" target="_blank" style="color: black;">
+                <a href="https://github.com/blockcheDev/blog-web" target="_blank" style="color: black;">
                     <svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 20" width="1.8em" height="1.8em"
                         data-v-6c8d2bba="">
                         <path fill="currentColor"
