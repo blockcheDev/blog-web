@@ -10,16 +10,6 @@ import { computed } from '@vue/reactivity';
 const formatDate = (date: any) => {
     return dayjs(date).format("YYYY-MM-DD HH:mm:ss")
 }
-const getCategoryName = async (id: any) => {
-    try {
-        const res = await api.getCategory(id)
-        const name: string = res.data.Name
-        return name
-    } catch (err) {
-        console.error(err)
-        return "NULL"
-    }
-}
 
 const getAllArticle = async () => {
     try {
@@ -32,9 +22,6 @@ const getAllArticle = async () => {
 
 onMounted(async () => {
     await getAllArticle()
-    for (var i = 0; i < list.length; i++) {
-        list[i].CategoryName = await getCategoryName(list[i].CategoryID)
-    }
 })
 
 const goToArticle = (id: any) => {

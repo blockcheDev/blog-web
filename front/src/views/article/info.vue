@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import type { Article } from '@/store/article';
 import { onMounted, ref } from 'vue';
 
-const prop = defineProps(['data'])
+const props = defineProps<{
+    data: Article
+}>()
 const url = ref("")
 onMounted(() => {
     url.value = location.href
@@ -13,7 +16,7 @@ onMounted(() => {
         <div>
             <span style="font-weight: bold;">文章作者：</span>
             <!-- <a href="http://www.hitori.cn" style="color:rgb(0, 225, 225)">{{ data.UserName }}</a> -->
-            <span>{{ data.UserName }}</span>
+            <span>{{ data.User.Name }}</span>
         </div>
         <div style="margin-top: 0.5em;">
             <span style="font-weight: bold;">文章链接：</span>

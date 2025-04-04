@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue'
 import { list } from '@/store/article';
-import type { Article } from '@/store/article';
 import * as store from '@/store/article';
 import api from '@/api/api';
 import router from '@/router';
@@ -20,15 +19,6 @@ onMounted(async () => {
         console.error(err)
     }
     // list.sort(comp)
-    for (var i = 0; i < list.length; i++) {
-        const atc = list[i]
-        try {
-            const res = await api.getTagByArticle(atc.ID)
-            list[i].tags = res.data
-        } catch (err) {
-            console.error(err)
-        }
-    }
     store.getAllCategory()
     store.getAllTag()
 })
@@ -58,7 +48,7 @@ const goToTag = () => {
                         {{ atc.Content }}
                     </span>
                     <div style="margin-top: 15px;">
-                        <el-tag v-for="tag in atc.tags" style="margin-right: 10px;">{{ tag }} </el-tag>
+                        <el-tag v-for="tag in atc.Tags" style="margin-right: 10px;">{{ tag.Name }} </el-tag>
                     </div>
                 </div>
             </el-card>

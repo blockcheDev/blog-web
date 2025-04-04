@@ -6,7 +6,6 @@ import (
 	"webback/util"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 )
 
 func ModifyUserInfo(c *gin.Context) {
@@ -55,7 +54,8 @@ func ModifyPassword(c *gin.Context) {
 
 func ModifyArticle(c *gin.Context) {
 	data := db.Article{}
-	c.ShouldBindBodyWith(&data, binding.JSON) //多次绑定时用这个
+	// c.ShouldBindBodyWith(&data, binding.JSON) //多次绑定时用这个
+	c.ShouldBind(&data)
 
 	claim, _ := util.ParseToken(c.GetHeader("token"))
 	name := claim.Name
@@ -66,12 +66,12 @@ func ModifyArticle(c *gin.Context) {
 		})
 		return
 	}
-	if data.UserID != article.UserID {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"msg": "禁止修改文章作者",
-		})
-		return
-	}
+
+	article.Title = data.Title
+	article.Content = data.Content
+	article.Type = data.Type
+	article.CategoryID = data.CategoryID
+	db.DB.Save(&article)
 
 	//修改分类
 	db.DB.Where("article_id = ?", article.ID).Delete(&db.ArticleCategory{})
@@ -87,8 +87,7 @@ func ModifyArticle(c *gin.Context) {
 			TagID:     ID,
 		})
 	}
-	c.ShouldBindBodyWith(&article, binding.JSON)
-	db.DB.Save(&article)
+
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "修改成功",
 		"ID":  article.ID,

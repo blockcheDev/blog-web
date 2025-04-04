@@ -37,24 +37,6 @@ onMounted(async () => {
     } catch (err) {
         console.error("文章获取失败", err)
     }
-    try {
-        const res = await api.getUserName(data.UserID)
-        data.UserName = res.data.Name
-    } catch (err) {
-        console.error(err)
-    }
-    try {
-        const res = await api.getTagByArticle(data.ID)
-        Object.assign(data.tags, res.data)
-    } catch (err) {
-        console.error(err)
-    }
-    try {
-        const res = await api.getCategory(data.CategoryID)
-        data.CategoryName = res.data.Name
-    } catch (err) {
-        console.error(err)
-    }
 })
 
 </script>

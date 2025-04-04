@@ -15,7 +15,7 @@ const props = defineProps<{
     data: Article
 }>()
 
-const handleTagClick = (tag: string) => {
+const handleTagClick = (tag: number) => {
     // 实现标签点击逻辑
     console.log('点击标签:', tag)
     // 示例：路由跳转到标签搜索页
@@ -68,7 +68,7 @@ const handleTagClick = (tag: string) => {
                     <span class="meta-text">{{ data.Type === 0 ? '原创' : '转载' }}</span>
                 </div>
                 <div class="meta-item">
-                    <span class="meta-text">分类 {{ data.CategoryName }}</span>
+                    <span class="meta-text">分类 {{ data.Category.Name }}</span>
                 </div>
                 <div class="meta-item">
                     <span class="meta-text">阅读量 {{ data.PageViews }}</span>
@@ -77,9 +77,9 @@ const handleTagClick = (tag: string) => {
 
             <!-- 标签云 -->
             <div class="meta-group" style="margin-top: 0.5rem;">
-                <el-tag v-for="(tag, index) in data.tags" :key="index" class="tag-item"
-                    @click="handleTagClick(tag)">
-                    #{{ tag }}
+                <el-tag v-for="(tag, index) in data.Tags" :key="index" class="tag-item"
+                    @click="handleTagClick(tag.ID)">
+                    #{{ tag.Name }}
                 </el-tag>
             </div>
         </div>

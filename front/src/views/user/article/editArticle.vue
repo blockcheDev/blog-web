@@ -2,18 +2,19 @@
 import { nextTick, onMounted, reactive, ref } from 'vue';
 import api from '@/api/api'
 import PageHeader from '@/layouts/PageHeader.vue';
-import { allCategory, getAllCategory, allTag, getAllTag } from '@/store/article';
+import { allCategory, getAllCategory, allTag, getAllTag, type Article, defaultData, type Tag } from '@/store/article';
 import router from '@/router';
 import { useRoute } from 'vue-router';
 const route = useRoute()
 
+const article: Article = reactive(JSON.parse(JSON.stringify(defaultData))) // 深拷贝，使得data是独立于defaultData的副本
 const form = reactive({
     ID: 0,
-    CategoryID: undefined,
+    CategoryID: 0,
     Title: '',
     Content: '',
     Type: 0,
-    Tags: [],
+    Tags: [] as number[],
 })
 
 onMounted(async () => {
@@ -21,17 +22,17 @@ onMounted(async () => {
     getAllTag()
     try {
         const res = await api.getArticle(route.params.id)
-        Object.assign(form, res.data)
+        Object.assign(article, res.data)
     } catch (err) {
         console.error(err)
     }
-    try {
-        const res = await api.getTagIDByArticle(route.params.id)
-        console.log(res.data)
-        form.Tags = res.data
-    } catch (err) {
-        console.error(err)
-    }
+
+    form.ID = article.ID
+    form.CategoryID = article.Category.ID
+    form.Title = article.Title
+    form.Content = article.Content
+    form.Type = article.Type
+    form.Tags = article.Tags.map((tag: Tag) => tag.ID)
 })
 
 const submitForm = async (form: any) => {

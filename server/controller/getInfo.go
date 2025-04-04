@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"context"
-	"encoding/json"
 	"net/http"
+	"slices"
+	"webback/controller/logic"
 	"webback/db"
 	"webback/util"
 
@@ -58,45 +58,43 @@ func GetArticle(c *gin.Context) {
 	id := c.Param("id")
 	// id为all时返回所有文章
 	if id == "all" {
+		articles := logic.Articles{}
 		// 先从redis中获取
-		// _, _ = db.RDB.Del(context.Background(), "article:all").Result()
-		res, _ := db.RDB.ZRevRange(context.Background(), "article:all", 0, -1).Result()
-		if len(res) == 0 {
-			// redis中没有，从mysql中载入缓存
-			logrus.Info("redis中没有，从mysql中载入缓存")
-			articles := db.Articles{}
-			db.DB.Find(&articles)
-			articles.LoadIntoRedis()
+		err := articles.GetFromRedis()
+		if err != nil || len(articles) == 0 {
+			// 有错误 或者 redis中没有，从mysql中载入缓存
+			logrus.Info("有错误 或者 redis中没有，从mysql中载入缓存")
+			db_articles := db.Articles{}
+			db.DB.Find(&db_articles)
 
-			// 再从redis中获取一次
-			res, _ = db.RDB.ZRevRange(context.Background(), "article:all", 0, -1).Result()
-			if len(res) == 0 {
-				c.JSON(http.StatusInternalServerError, gin.H{
-					"msg": "获取文章列表失败",
-				})
-				return
+			articles = make(logic.Articles, len(db_articles))
+			for i, db_article := range db_articles {
+				articles[i] = logic.GetArticle(&db_article)
 			}
-		}
-		// 从redis中获取成功
-		articles := []db.Article{}
-		for _, v := range res {
-			article := db.Article{}
-			json.Unmarshal([]byte(v), &article)
-			articles = append(articles, article)
+
+			err := articles.LoadIntoRedis()
+			if err != nil {
+				logrus.Error("redis缓存失败, err: ", err)
+				// 这里不return
+			}
+
+			// 文章列表时间倒序
+			slices.Reverse(articles)
 		}
 		c.JSON(http.StatusOK, articles)
 	} else {
-		article := db.GetArticle(id)
-		if article == nil {
+		db_article := db.GetArticle(id)
+		if db_article == nil {
 			c.JSON(http.StatusNotFound, gin.H{
 				"msg": "文章不存在",
 			})
 			return
 		}
+		article := logic.GetArticle(db_article)
 		c.JSON(http.StatusOK, article)
 
 		// 增加浏览量
-		article.IncreasePageViews()
+		db_article.IncreasePageViews()
 	}
 }
 func GetCategory(c *gin.Context) {
