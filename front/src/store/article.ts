@@ -28,8 +28,7 @@ export interface Tag {
 export interface Comment {
   ID: number;
   CreatedAt: string;
-  UserID: number;
-  UserName: string;
+  User: User;
   ArticleID: number;
   ReplyTopCommentID: number;
   ReplyCommentID: number;

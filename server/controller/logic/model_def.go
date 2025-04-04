@@ -30,3 +30,15 @@ type Tag struct {
 	ID   uint
 	Name string
 }
+
+type Comment struct {
+	gorm.Model
+
+	User              User
+	ArticleID         uint
+	ReplyTopCommentID uint
+	ReplyCommentID    uint
+
+	Content string
+	Favor   int
+}

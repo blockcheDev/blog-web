@@ -174,5 +174,11 @@ func GetCommentListByArticle(c *gin.Context) {
 	id := c.Param("id")
 	data := []db.Comment{}
 	db.DB.Where("article_id=?", id).Find(&data)
-	c.JSON(http.StatusOK, data)
+
+	comments := make([]logic.Comment, len(data))
+	for i, db_comment := range data {
+		comments[i] = logic.GetComment(&db_comment)
+	}
+
+	c.JSON(http.StatusOK, comments)
 }
