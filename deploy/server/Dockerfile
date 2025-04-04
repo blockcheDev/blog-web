@@ -13,7 +13,8 @@ COPY --from=builder /app/server/server ./
 COPY --from=builder /app/server/config/config.yaml ./config/
 
 # 添加时区数据库，设置了TZ后会来这里查询时区信息
-RUN apk update && apk add tzdata
+RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.tuna.tsinghua.edu.cn/alpine#g' /etc/apk/repositories \
+    && apk update && apk add tzdata
 
 EXPOSE 8080
 
