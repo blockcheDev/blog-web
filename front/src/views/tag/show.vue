@@ -25,15 +25,6 @@ onMounted(async () => {
     } catch (err) {
         console.error(err)
     }
-    for (var i = 0; i < list.length; i++) {
-        const atc = list[i]
-        try {
-            const res = await api.getTagByArticle(atc.ID)
-            list[i].tags = res.data
-        } catch (err) {
-            console.error(err)
-        }
-    }
 })
 
 const goToArticle = (id: any) => {
@@ -57,7 +48,7 @@ const goToArticle = (id: any) => {
                     {{ atc.Content }}
                 </span>
                 <div style="margin-top: 15px;">
-                    <el-tag v-for="tag in atc.tags" style="margin-right: 10px;">{{ tag }} </el-tag>
+                    <el-tag v-for="tag in atc.Tags" style="margin-right: 10px;">{{ tag.Name }} </el-tag>
                 </div>
             </div>
         </el-card>

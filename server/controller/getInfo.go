@@ -148,14 +148,26 @@ func GetArticleListByCategory(c *gin.Context) {
 	id := c.Param("id")
 	data := []db.Article{}
 	db.DB.Table("articles").Where("category_id=?", id).Find(&data)
-	c.JSON(http.StatusOK, data)
+
+	articles := make(logic.Articles, len(data))
+	for i, db_article := range data {
+		articles[i] = logic.GetArticle(&db_article)
+	}
+
+	c.JSON(http.StatusOK, articles)
 }
 
 func GetArticleListByTag(c *gin.Context) {
 	id := c.Param("id")
 	data := []db.Article{}
 	db.DB.Debug().Model(&db.ArticleTag{}).Select("articles.*").Joins("join articles on articles.id = article_tags.article_id").Where("article_tags.tag_id=?", id).Find(&data)
-	c.JSON(http.StatusOK, data)
+
+	articles := make(logic.Articles, len(data))
+	for i, db_article := range data {
+		articles[i] = logic.GetArticle(&db_article)
+	}
+
+	c.JSON(http.StatusOK, articles)
 }
 
 func GetCommentListByArticle(c *gin.Context) {
