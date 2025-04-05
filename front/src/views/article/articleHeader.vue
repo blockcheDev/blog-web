@@ -15,35 +15,14 @@ const props = defineProps<{
     data: Article
 }>()
 
-const handleTagClick = (tag: number) => {
-    // 实现标签点击逻辑
-    console.log('点击标签:', tag)
-    // 示例：路由跳转到标签搜索页
-    // router.push(`/tag/${tag}`)
+const handleTagClick = (tag_id: number) => {
+    router.push(`/tag/${tag_id}`)
+}
+const handleCategoryClick = (category_id: number) => {
+    router.push(`/category/${category_id}`)
 }
 
 </script>
-
-
-<!-- <template>
-    <div style="display: flex; flex-flow: column;">
-        <div style="margin: auto;">
-            <h2>{{ data.Title }}</h2>
-        </div>
-        <div style="display: flex; flex-flow: column; margin: auto;">
-            <p style="margin: 0.3em auto;">
-                <el-icon><Calendar /></el-icon>发布于 {{ formatDate(data.CreatedAt) }} | <el-icon><Edit /></el-icon>修改于 {{ formatDate(data.UpdatedAt) }}
-            </p>
-            <p style="margin: 0.3em auto;">
-                {{ data.CategoryName }} | {{ data.Type===0 ? "原创" : "转载" }} | 阅读量: {{ data.PageViews }}
-            </p>
-            <p style="margin: auto auto;">
-                <el-tag v-for="tag in data.tags" style="margin-left: 10px;">{{ tag }} </el-tag>
-            </p>
-        </div>
-    </div>
-</template>
-   -->
 
 <template>
     <div class="article-header">
@@ -52,7 +31,6 @@ const handleTagClick = (tag: number) => {
         </div>
 
         <div class="meta-container">
-            <!-- 时间信息 -->
             <div class="meta-group">
                 <div class="meta-item">
                     <span class="meta-text">发布于 {{ formatDate(data.CreatedAt) }}</span>
@@ -62,12 +40,11 @@ const handleTagClick = (tag: number) => {
                 </div>
             </div>
 
-            <!-- 分类信息 -->
             <div class="meta-group">
                 <div class="meta-item">
                     <span class="meta-text">{{ data.Type === 0 ? '原创' : '转载' }}</span>
                 </div>
-                <div class="meta-item">
+                <div class="meta-item-category" @click="handleCategoryClick(data.Category.ID)">
                     <span class="meta-text">分类 {{ data.Category.Name }}</span>
                 </div>
                 <div class="meta-item">
@@ -75,11 +52,10 @@ const handleTagClick = (tag: number) => {
                 </div>
             </div>
 
-            <!-- 标签云 -->
             <div class="meta-group" style="margin-top: 0.5rem;">
                 <el-tag v-for="(tag, index) in data.Tags" :key="index" class="tag-item"
                     @click="handleTagClick(tag.ID)">
-                    #{{ tag.Name }}
+                    {{ tag.Name }}
                 </el-tag>
             </div>
         </div>
@@ -116,14 +92,23 @@ const handleTagClick = (tag: number) => {
     gap: 1rem;              /* 元素间距 */
   }
 
-  /* 通用信息项样式 */
-  .meta-item {
+/* 通用信息项样式 */
+  .meta-item, .meta-item-category {
     padding: 0.5rem 0.9rem;   /* 内边距 */
     background: var(--el-fill-color-light); /* 背景色 */
     border-radius: 8px;     /* 圆角半径 */
     display: inline-flex;   /* 行内弹性布局 */
     align-items: center;    /* 垂直居中 */
-    transition: background-color 0.3s ease; /* 背景过渡 */
+    transition: background-color 0.3s ease, transform 0.5s ease; /* 背景与变换过渡 */
+  }
+
+  .meta-item-category {
+    cursor: pointer;     /* 手型光标 */
+    
+    &:hover {
+      transform: translateY(-3px); /* 悬停上移 */
+      box-shadow: 0 2px 8px var(--el-box-shadow-light); /* 阴影效果 */
+    }
   }
 
   /* 文字样式 */
@@ -134,7 +119,6 @@ const handleTagClick = (tag: number) => {
 
   /* 标签样式 */
   .tag-item {
-    /* 标签云特效 */
     cursor: pointer;     /* 手型光标 */
     transition: transform 0.5s ease; /* 变换动画 */
     
