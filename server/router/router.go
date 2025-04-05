@@ -8,7 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func init() {
+	gin.SetMode(gin.ReleaseMode)
+}
+
 func StartRouter() {
+
 	r := gin.Default()
 	r.Use(middleware.Cors())
 	// r.LoadHTMLGlob("./html/*")

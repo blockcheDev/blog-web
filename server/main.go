@@ -13,6 +13,8 @@ import (
 )
 
 func log_init() {
+	logrus.SetLevel(logrus.InfoLevel)
+
 	os.Mkdir("logs", 0755)
 	log_file, err := os.OpenFile("logs/today.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
