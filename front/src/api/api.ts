@@ -5,8 +5,8 @@ export default {
   getArticle: (id: any) => request.get(`/api/article/${id}`),
   getCategory: (id: any) => request.get(`/api/category/${id}`),
   getTag: (id: any) => request.get(`/api/tag/${id}`),
-  getTagByArticle: (id: any) => request.get(`/api/article/${id}/tag`), //根据文章ID获取标签
-  getTagIDByArticle: (id: any) => request.get(`/api/article/${id}/tagid`), //根据文章ID获取标签ID
+  // getTagByArticle: (id: any) => request.get(`/api/article/${id}/tag`), //根据文章ID获取标签
+  // getTagIDByArticle: (id: any) => request.get(`/api/article/${id}/tagid`), //根据文章ID获取标签ID
   getArticleListByCategory: (id: any) =>
     request.get(`/api/category/${id}/list`), // 根据分类id获取文章列表
   getArticleListByTag: (id: any) => request.get(`/api/tag/${id}/list`), // 根据标签id获取文章列表

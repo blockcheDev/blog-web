@@ -45,8 +45,8 @@ func StartRouter() {
 		{
 			article.GET("/:id", controller.GetArticle)                      // 获取文章信息
 			article.GET("/:id/comment", controller.GetCommentListByArticle) // 根据文章id获取评论列表
-			article.GET("/:id/tag", controller.GetTagByArticle)             // 根据文章id获取标签名称列表
-			article.GET("/:id/tagid", controller.GetTagIDByArticle)         // 根据文章id获取标签id列表
+			// article.GET("/:id/tag", controller.GetTagByArticle)             // 根据文章id获取标签名称列表
+			// article.GET("/:id/tagid", controller.GetTagIDByArticle)         // 根据文章id获取标签id列表
 		}
 		user := base.Group("/user")
 		{
