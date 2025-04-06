@@ -36,7 +36,7 @@ const handleCategoryClick = (category_id: number) => {
                     <span class="meta-text">发布于 {{ formatDate(data.CreatedAt) }}</span>
                 </div>
                 <div class="meta-item">
-                    <span class="meta-text">修改于 {{ formatDate(data.UpdatedAt) }}</span>
+                    <span class="meta-text">修改于 {{ formatDate(data.ModifiedAt) }}</span>
                 </div>
             </div>
 

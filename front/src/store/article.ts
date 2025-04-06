@@ -4,7 +4,7 @@ import { reactive, ref } from "vue";
 export interface Article {
   ID: number;
   CreatedAt: string;
-  UpdatedAt: string;
+  ModifiedAt: string;
   Category: Category;
   User: User;
   Title: string;
@@ -41,7 +41,7 @@ export interface Comment {
 const defaultData: Article = Object.freeze({
   ID: 0,
   CreatedAt: "",
-  UpdatedAt: "",
+  ModifiedAt: "",
   Category: {
     ID: 0,
     Name: "",

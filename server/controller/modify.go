@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"time"
 	"webback/db"
 	"webback/util"
 
@@ -71,6 +72,7 @@ func ModifyArticle(c *gin.Context) {
 	article.Content = data.Content
 	article.Type = data.Type
 	article.CategoryID = data.CategoryID
+	article.ModifiedAt = time.Now()
 	db.DB.Save(&article)
 
 	//修改分类

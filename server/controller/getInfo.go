@@ -54,6 +54,22 @@ func GetUserName(c *gin.Context) {
 		})
 	}
 }
+
+func repairArticleModifiedAt(db_articles db.Articles) {
+	for i := range db_articles {
+		article := &db_articles[i]
+		if article.ModifiedAt.IsZero() {
+			article.ModifiedAt = article.UpdatedAt
+		}
+	}
+
+	logrus.Infof("repair modified_at, article[%+v]", db_articles[0])
+
+	// 更新数据库
+	db.DB.Save(db_articles)
+
+}
+
 func GetArticle(c *gin.Context) {
 	id := c.Param("id")
 	// id为all时返回所有文章
@@ -61,11 +77,14 @@ func GetArticle(c *gin.Context) {
 		articles := logic.Articles{}
 		// 先从redis中获取
 		err := articles.GetFromRedis()
-		if err != nil || len(articles) == 0 {
+		if true || err != nil || len(articles) == 0 {
 			// 有错误 或者 redis中没有，从mysql中载入缓存
 			logrus.Info("有错误 或者 redis中没有，从mysql中载入缓存")
 			db_articles := db.Articles{}
 			db.DB.Find(&db_articles)
+
+			// 修复文章的修改时间
+			repairArticleModifiedAt(db_articles)
 
 			articles = make(logic.Articles, len(db_articles))
 			for i, db_article := range db_articles {

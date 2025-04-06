@@ -3,6 +3,7 @@ package controller
 import (
 	"log"
 	"net/http"
+	"time"
 	"webback/db"
 	"webback/util"
 
@@ -36,6 +37,8 @@ func PushArticle(c *gin.Context) {
 	name := claim.Name
 	user := db.GetUserByName(name)
 	article.UserID = user.ID
+
+	article.ModifiedAt = time.Now()
 
 	res := db.DB.Create(&article)
 	if res.RowsAffected == 0 {

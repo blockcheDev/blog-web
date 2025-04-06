@@ -10,11 +10,12 @@ import (
 
 func GetArticle(db_article *db.Article) Article {
 	article := Article{
-		Model:     db_article.Model,
-		Title:     db_article.Title,
-		Content:   db_article.Content,
-		Type:      db_article.Type,
-		PageViews: db_article.PageViews,
+		Model:      db_article.Model,
+		ModifiedAt: db_article.ModifiedAt,
+		Title:      db_article.Title,
+		Content:    db_article.Content,
+		Type:       db_article.Type,
+		PageViews:  db_article.PageViews,
 	}
 
 	// 获取分类

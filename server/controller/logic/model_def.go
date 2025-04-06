@@ -1,9 +1,14 @@
 package logic
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Article struct {
 	gorm.Model
+	ModifiedAt time.Time
 
 	Category Category
 	User     User
