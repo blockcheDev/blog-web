@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -41,7 +42,23 @@ func GetArticle(ID interface{}) *Article {
 	return &article
 }
 
-func (article *Article) IncreasePageViews() {
+func (article *Article) IncreasePageViews(ip string) {
+	// 查询redis此ip是否存在或是否有效
+	is_existing, err := RDB.Exists(context.Background(), fmt.Sprintf("article:read_ip:%v_%s", article.ID, ip)).Result()
+	if err != nil {
+		logrus.Error("redis查询ip失败:", err)
+		return
+	}
+	if is_existing != 0 {
+		return
+	}
+
+	_, err = RDB.SetEx(context.Background(), fmt.Sprintf("article:read_ip:%v_%s", article.ID, ip), "", time.Minute*5).Result()
+	if err != nil {
+		logrus.Error("redis设置ip失败:", err)
+		return
+	}
+
 	article.PageViews++
 	DB.Save(article)
 }
