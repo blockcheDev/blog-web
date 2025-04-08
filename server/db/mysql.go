@@ -19,11 +19,11 @@ func InitMysql() (err error) {
 	newLogger := logger.New(
 		logrus.StandardLogger(),
 		logger.Config{
-			SlowThreshold:             time.Second,   // Slow SQL threshold
-			LogLevel:                  logger.Silent, // Log level
-			IgnoreRecordNotFoundError: true,          // Ignore ErrRecordNotFound error for logger
-			ParameterizedQueries:      true,          // Don't include params in the SQL log
-			Colorful:                  false,         // Disable color
+			SlowThreshold:             time.Second, // Slow SQL threshold
+			LogLevel:                  logger.Warn, // Log level
+			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
+			ParameterizedQueries:      true,        // Don't include params in the SQL log
+			Colorful:                  false,       // Disable color
 		},
 	)
 
@@ -37,12 +37,12 @@ func InitMysql() (err error) {
 		return
 	}
 
-	DB.AutoMigrate(&User{})
-	DB.AutoMigrate(&Article{})
-	DB.AutoMigrate(&ArticleTag{})
-	DB.AutoMigrate(&ArticleCategory{})
-	DB.AutoMigrate(&Tag{})
-	DB.AutoMigrate(&Category{})
-	DB.AutoMigrate(&Comment{})
+	DB.AutoMigrate(User{})
+	DB.AutoMigrate(Article{})
+	DB.AutoMigrate(ArticleTag{})
+	DB.AutoMigrate(ArticleCategory{})
+	DB.AutoMigrate(Tag{})
+	DB.AutoMigrate(Category{})
+	DB.AutoMigrate(Comment{})
 	return
 }
