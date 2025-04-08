@@ -53,7 +53,7 @@ func (article *Article) IncreasePageViews(ip string) {
 		return
 	}
 
-	_, err = RDB.SetEx(context.Background(), fmt.Sprintf("article:read_ip:%v_%s", article.ID, ip), "", time.Minute*5).Result()
+	_, err = RDB.SetEx(context.Background(), fmt.Sprintf("article:read_ip:%v_%s", article.ID, ip), "", time.Minute).Result()
 	if err != nil {
 		logrus.Error("redis设置ip失败:", err)
 		return
