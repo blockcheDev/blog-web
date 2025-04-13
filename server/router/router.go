@@ -13,8 +13,8 @@ func init() {
 }
 
 func StartRouter() {
-
 	r := gin.Default()
+	r.Use(middleware.IncreaseRecentVisitors)
 	r.Use(middleware.Cors())
 	// r.LoadHTMLGlob("./html/*")
 
@@ -52,6 +52,7 @@ func StartRouter() {
 		{
 			user.GET("/:id", controller.GetUserName) // 获取用户名称
 		}
+		base.GET("/recent_visitors", controller.GetRecentVisitors) // 获取最近访客
 	}
 
 	// 需要登录的接口

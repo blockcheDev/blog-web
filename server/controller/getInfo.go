@@ -1,8 +1,11 @@
 package controller
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 	"slices"
+	"time"
 	"webback/controller/logic"
 	"webback/db"
 	"webback/util"
@@ -183,4 +186,21 @@ func GetCommentListByArticle(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, comments)
+}
+
+func GetRecentVisitors(c *gin.Context) {
+	expire_at := time.Now().Add(-time.Hour * 24 * 30).Unix()
+	db.RDB.ZRemRangeByScore(context.Background(), "recent_visitors", "0", fmt.Sprint(expire_at))
+
+	res, err := db.RDB.ZCard(context.Background(), "recent_visitors").Result()
+	if err != nil {
+		logrus.Error("redis获取最近访客失败:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "redis获取最近访客失败",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"RecentVisitorsCount": res,
+	})
 }

@@ -35,4 +35,6 @@ export default {
   // 使用github登录
   loginWithGithub: (code: string) =>
     request.get(`/api/login/github?code=${code}`),
+
+  getRecentVisitors: () => request.get("/api/recent_visitors") // 获取最近访客
 };
