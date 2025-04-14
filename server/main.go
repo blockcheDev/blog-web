@@ -53,6 +53,13 @@ func main() {
 		return
 	}
 
+	// 初始化ip2region
+	err = util.InitIp2Region()
+	if err != nil {
+		logrus.Error("util.InitIp2Region failed, err:", err)
+		return
+	}
+
 	// 启动路由，然后阻塞程序
 	router.StartRouter()
 }

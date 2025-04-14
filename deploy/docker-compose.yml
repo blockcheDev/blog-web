@@ -55,6 +55,7 @@ services:
         condition: service_started
     volumes:
       - ${DATA_DIRECTORY}/data/server/logs:/app/logs
+      - ./server/ip2region.xdb:/app/ip2region.xdb
     environment:
       - TZ=Asia/Shanghai
     ports:

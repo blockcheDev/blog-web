@@ -1,3 +1,4 @@
+import { get } from "node_modules/axios/index.cjs";
 import request from "./axios";
 
 export default {
@@ -36,5 +37,6 @@ export default {
   loginWithGithub: (code: string) =>
     request.get(`/api/login/github?code=${code}`),
 
-  getRecentVisitors: () => request.get("/api/recent_visitors") // 获取最近访客
+  getRecentVisitorsCount: () => request.get("/api/recent_visitors_count"), // 获取最近访客数量
+  getRecentVisitors: () => request.get("/api/recent_visitors") // 获取最近访客ip和region
 };

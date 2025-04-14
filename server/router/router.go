@@ -52,7 +52,7 @@ func StartRouter() {
 		{
 			user.GET("/:id", controller.GetUserName) // 获取用户名称
 		}
-		base.GET("/recent_visitors", controller.GetRecentVisitors) // 获取最近访客
+		base.GET("/recent_visitors_count", controller.GetRecentVisitorsCount) // 获取最近访客数量
 	}
 
 	// 需要登录的接口
@@ -89,6 +89,7 @@ func StartRouter() {
 		{
 			category.POST("", controller.CreateCategory) // 创建新分类
 		}
+		base.GET("/recent_visitors", controller.GetRecentVisitors) // 获取最近访客ip和region
 	}
 
 	// r.GET("/test", func(c *gin.Context) {

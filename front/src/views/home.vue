@@ -5,13 +5,12 @@ import * as store from '@/store/article';
 import api from '@/api/api';
 import router from '@/router';
 
-const RecentVisitors = reactive({
+const RecentVisitorsCount = reactive({
     RecentVisitorsCount: 0,
 })
 onMounted(async () => {
     try {
         const res = await api.getArticle("all")
-        console.log(res.data)
         Object.assign(list, res.data)
     } catch (err) {
         console.error(err)
@@ -19,9 +18,8 @@ onMounted(async () => {
     store.getAllCategory()
     store.getAllTag()
     try {
-        const res = await api.getRecentVisitors()
-        console.log(res.data)
-        Object.assign(RecentVisitors, res.data)
+        const res = await api.getRecentVisitorsCount()
+        Object.assign(RecentVisitorsCount, res.data)
     } catch (err) {
         console.error(err)
     }
@@ -82,7 +80,7 @@ const goToTag = () => {
                 </div>
             </el-card>
             <el-card style="width: 15vw; margin-left: 2vw;">
-                <span>最近访客 {{ RecentVisitors.RecentVisitorsCount }}</span>
+                <span>最近访客 {{ RecentVisitorsCount.RecentVisitorsCount }}</span>
             </el-card>
         </div>
     </div>

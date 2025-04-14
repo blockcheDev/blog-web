@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"slices"
+	"strconv"
 	"time"
 	"webback/controller/logic"
 	"webback/db"
@@ -188,11 +189,28 @@ func GetCommentListByArticle(c *gin.Context) {
 	c.JSON(http.StatusOK, comments)
 }
 
-func GetRecentVisitors(c *gin.Context) {
+func GetRecentVisitorsCount(c *gin.Context) {
 	expire_at := time.Now().Add(-time.Hour * 24 * 30).Unix()
 	db.RDB.ZRemRangeByScore(context.Background(), "recent_visitors", "0", fmt.Sprint(expire_at))
 
 	res, err := db.RDB.ZCard(context.Background(), "recent_visitors").Result()
+	if err != nil {
+		logrus.Error("redis获取最近访客数量失败:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "redis获取最近访客数量失败",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"RecentVisitorsCount": res,
+	})
+}
+
+func GetRecentVisitors(c *gin.Context) {
+	expire_at := time.Now().Add(-time.Hour * 24 * 30).Unix()
+	db.RDB.ZRemRangeByScore(context.Background(), "recent_visitors", "0", fmt.Sprint(expire_at))
+
+	res, err := db.RDB.ZRevRange(context.Background(), "recent_visitors", 0, -1).Result()
 	if err != nil {
 		logrus.Error("redis获取最近访客失败:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -200,7 +218,39 @@ func GetRecentVisitors(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"RecentVisitorsCount": res,
-	})
+	list_ip := make([]string, len(res)/2)
+	list_ts := make([]int64, len(res)/2)
+	for i, val := range res {
+		if i%2 == 0 {
+			list_ip[i/2] = val
+		} else {
+			ts, err := strconv.ParseInt(val, 10, 64)
+			if err != nil {
+				logrus.Error("最近访客的ts string转为int64 failed: ", err)
+				continue
+			}
+			list_ts[i/2] = ts
+		}
+	}
+
+	list_region, err := util.Ip2Region(list_ip)
+	if err != nil {
+		logrus.Error("ip2region失败:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "ip2region失败",
+		})
+		return
+	}
+
+	recent_visitors := make([]struct {
+		IP     string
+		Ts     int64
+		Region string
+	}, len(list_ip))
+	for i, ip := range list_ip {
+		recent_visitors[i].IP = ip
+		recent_visitors[i].Ts = list_ts[i]
+		recent_visitors[i].Region = list_region[i]
+	}
+	c.JSON(http.StatusOK, recent_visitors)
 }
