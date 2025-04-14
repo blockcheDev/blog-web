@@ -1,4 +1,3 @@
-import { get } from "node_modules/axios/index.cjs";
 import request from "./axios";
 
 export default {
