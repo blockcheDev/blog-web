@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/lionsoul2014/ip2region/binding/golang/xdb"
+	"github.com/sirupsen/logrus"
 )
 
 var cBuff []byte
@@ -72,7 +73,7 @@ func Ip2Region(list_ip []string) ([]string, error) {
 	// 用全局的 cBuff 创建完全基于内存的查询对象。
 	searcher, err := xdb.NewWithBuffer(cBuff)
 	if err != nil {
-		fmt.Printf("failed to create searcher with content: %s\n", err)
+		logrus.Errorf("failed to create searcher with content: %s\n", err)
 		return nil, err
 	}
 	defer searcher.Close()
@@ -81,7 +82,7 @@ func Ip2Region(list_ip []string) ([]string, error) {
 	for i, ip := range list_ip {
 		list_region[i], err = searcher.SearchByStr(ip)
 		if err != nil {
-			fmt.Printf("failed to SearchIP(%s): %s\n", ip, err)
+			logrus.Errorf("failed to SearchIP(%s): %s\n", ip, err)
 			list_region[i] = "未知归属地"
 		}
 	}

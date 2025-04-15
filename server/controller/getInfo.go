@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"slices"
-	"strconv"
 	"time"
 	"webback/controller/logic"
 	"webback/db"
@@ -210,7 +209,7 @@ func GetRecentVisitors(c *gin.Context) {
 	expire_at := time.Now().Add(-time.Hour * 24 * 30).Unix()
 	db.RDB.ZRemRangeByScore(context.Background(), "recent_visitors", "0", fmt.Sprint(expire_at))
 
-	res, err := db.RDB.ZRevRange(context.Background(), "recent_visitors", 0, -1).Result()
+	res, err := db.RDB.ZRevRangeWithScores(context.Background(), "recent_visitors", 0, -1).Result()
 	if err != nil {
 		logrus.Error("redis获取最近访客失败:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -218,19 +217,13 @@ func GetRecentVisitors(c *gin.Context) {
 		})
 		return
 	}
-	list_ip := make([]string, len(res)/2)
-	list_ts := make([]int64, len(res)/2)
+	logrus.Info("redis最近访客: ", res)
+
+	list_ip := make([]string, len(res))
+	list_ts := make([]int64, len(res))
 	for i, val := range res {
-		if i%2 == 0 {
-			list_ip[i/2] = val
-		} else {
-			ts, err := strconv.ParseInt(val, 10, 64)
-			if err != nil {
-				logrus.Error("最近访客的ts string转为int64 failed: ", err)
-				continue
-			}
-			list_ts[i/2] = ts
-		}
+		list_ip[i] = val.Member.(string)
+		list_ts[i] = int64(val.Score)
 	}
 
 	list_region, err := util.Ip2Region(list_ip)

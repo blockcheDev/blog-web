@@ -4,10 +4,20 @@ import { list } from '@/store/article';
 import * as store from '@/store/article';
 import api from '@/api/api';
 import router from '@/router';
+import DataDialog from '@/components/DataDialog.vue'
+import dayjs from 'dayjs';
 
 const RecentVisitorsCount = reactive({
     RecentVisitorsCount: 0,
 })
+interface Visitor {
+    IP: string,
+    Ts: number,
+    Region: string,
+
+    Date: string,
+}
+const RecentVisitors = reactive<Visitor[]>([])
 onMounted(async () => {
     try {
         const res = await api.getArticle("all")
@@ -23,7 +33,6 @@ onMounted(async () => {
     } catch (err) {
         console.error(err)
     }
-    
 })
 
 const goToArticle = (id: any) => {
@@ -35,6 +44,22 @@ const goToCategory = () => {
 const goToTag = () => {
     router.push("/tag")
 }
+
+const showDialog = ref(false)
+const showRecentVisitors = async () => {
+    showDialog.value = true
+    try {
+        const res = await api.getRecentVisitors()
+        Object.assign(RecentVisitors, res.data)
+    } catch (err) {
+        console.error(err)
+    }
+    for (var visitor of RecentVisitors) {
+        visitor.Date = dayjs.unix(visitor.Ts).format("YYYY-MM-DD HH:mm:ss")
+    }
+}
+
+
 </script>
 
 <template>
@@ -79,11 +104,19 @@ const goToTag = () => {
                     </div>
                 </div>
             </el-card>
-            <el-card style="width: 15vw; margin-left: 2vw;">
+            <el-card class="recent-visitors" @click="showRecentVisitors()">
                 <span>最近访客 {{ RecentVisitorsCount.RecentVisitorsCount }}</span>
             </el-card>
         </div>
     </div>
+
+    <DataDialog v-model="showDialog" title="最近访客">
+        <el-table :data="RecentVisitors" style="width: 100%">
+            <el-table-column prop="IP" label="IP" width="180" />
+            <el-table-column prop="Date" label="Date" width="180" />
+            <el-table-column prop="Region" label="Region" />
+        </el-table>
+    </DataDialog>
 </template>
 
 <style scoped>
@@ -136,6 +169,16 @@ const goToTag = () => {
     /* border-color: #dadada;
     border-width: 8px; */
     width: 65vw;
+    box-shadow: 0 0 0 8px #dadada;
+    transition: all 0.2s ease-in-out;
+}
+
+.recent-visitors {
+    width: 15vw;
+    margin-left: 2vw;
+}
+
+.recent-visitors:hover {
     box-shadow: 0 0 0 8px #dadada;
     transition: all 0.2s ease-in-out;
 }
