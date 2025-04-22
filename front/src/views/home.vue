@@ -63,60 +63,63 @@ const showRecentVisitors = async () => {
 </script>
 
 <template>
-    <div style="display: flex;">
-        <div style="margin-left: 9vw; width: 70vw;">
-            <el-card class="atc-list" v-for="atc in list" :key="atc.ID" @click="goToArticle(atc.ID)">
-                <div style="display: flex; flex-flow: column;">
-                    <span
-                        style="font-size: 1.5em;font-weight: bold; white-space: nowrap; display: inline-block; overflow: hidden; width: 98%;">
-                        {{ atc.Title }}
-                    </span>
-                    <span
-                        style=" white-space: nowrap; display: inline-block; overflow: hidden; width: 98%; margin-top: 10px;">
-                        {{ atc.Content }}
-                    </span>
-                    <div style="margin-top: 15px;">
-                        <el-tag v-for="tag in atc.Tags" style="margin-right: 10px;">{{ tag.Name }} </el-tag>
-                    </div>
-                </div>
-            </el-card>
-        </div>
-        <div style="display: flex; flex-flow: column; margin-left: auto;margin-right: 5vw;">
-            <el-card style="width: 15vw; margin-left: 2vw;">
-                <div style="display: flex; flex-flow: column;">
-                    <el-avatar style="width: 6vw; height: 6vw; margin: 1vh auto 0 auto;"
-                        src="https://avatars.githubusercontent.com/u/89156012?v=4" />
-                    <span style="margin: 2vh auto 0 auto; font-weight: bold; font-size: 1.6em;">blockche</span>
-                    <span style="margin: 0.4vh auto 0 auto; font-size: 1.1em;">无限进步</span>
-                    <div style="display: flex; flex-flow: column; margin-top: 2vh;">
-                        <div class="info">
-                            <span>文章</span>
-                            <span>{{ list.length }}</span>
-                        </div>
-                        <div class="info" @click="goToCategory()">
-                            <span>分类</span>
-                            <span>{{ store.allCategory.length }}</span>
-                        </div>
-                        <div class="info" @click="goToTag()">
-                            <span>标签</span>
-                            <span>{{ store.allTag.length }}</span>
+    <div class="home-container">
+        <div style="display: flex;">
+            <div style="margin-left: 9vw; width: 70vw;">
+                <el-card class="atc-list" v-for="atc in list" :key="atc.ID" @click="goToArticle(atc.ID)">
+                    <div style="display: flex; flex-flow: column;">
+                        <span
+                            style="font-size: 1.5em;font-weight: bold; white-space: nowrap; display: inline-block; overflow: hidden; width: 98%;">
+                            {{ atc.Title }}
+                        </span>
+                        <span
+                            style=" white-space: nowrap; display: inline-block; overflow: hidden; width: 98%; margin-top: 10px;">
+                            {{ atc.Content }}
+                        </span>
+                        <div style="margin-top: 15px;">
+                            <el-tag v-for="tag in atc.Tags" style="margin-right: 10px;">{{ tag.Name }} </el-tag>
                         </div>
                     </div>
-                </div>
-            </el-card>
-            <el-card class="recent-visitors" @click="showRecentVisitors()">
-                <span>最近访客 {{ RecentVisitorsCount.RecentVisitorsCount }}</span>
-            </el-card>
+                </el-card>
+            </div>
+            <div style="display: flex; flex-flow: column; margin-left: auto;margin-right: 5vw;">
+                <el-card style="width: 15vw; margin-left: 2vw;">
+                    <div style="display: flex; flex-flow: column;">
+                        <el-avatar style="width: 6vw; height: 6vw; margin: 1vh auto 0 auto;"
+                            src="https://avatars.githubusercontent.com/u/89156012?v=4" />
+                        <span style="margin: 2vh auto 0 auto; font-weight: bold; font-size: 1.6em;">blockche</span>
+                        <span style="margin: 0.4vh auto 0 auto; font-size: 1.1em;">无限进步</span>
+                        <div style="display: flex; flex-flow: column; margin-top: 2vh;">
+                            <div class="info">
+                                <span>文章</span>
+                                <span>{{ list.length }}</span>
+                            </div>
+                            <div class="info" @click="goToCategory()">
+                                <span>分类</span>
+                                <span>{{ store.allCategory.length }}</span>
+                            </div>
+                            <div class="info" @click="goToTag()">
+                                <span>标签</span>
+                                <span>{{ store.allTag.length }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </el-card>
+                <el-card class="recent-visitors" @click="showRecentVisitors()">
+                    <span>最近访客 {{ RecentVisitorsCount.RecentVisitorsCount }}</span>
+                </el-card>
+            </div>
         </div>
+
+        <DataDialog v-model="showDialog" title="最近访客">
+            <el-table :data="RecentVisitors" style="width: 100%">
+                <el-table-column prop="IP" label="IP" width="180" />
+                <el-table-column prop="Date" label="Date" width="180" />
+                <el-table-column prop="Region" label="Region" />
+            </el-table>
+        </DataDialog>
     </div>
 
-    <DataDialog v-model="showDialog" title="最近访客">
-        <el-table :data="RecentVisitors" style="width: 100%">
-            <el-table-column prop="IP" label="IP" width="180" />
-            <el-table-column prop="Date" label="Date" width="180" />
-            <el-table-column prop="Region" label="Region" />
-        </el-table>
-    </DataDialog>
 </template>
 
 <style scoped>
@@ -129,10 +132,10 @@ const showRecentVisitors = async () => {
     border: 1px solid #e0e0e0;
     /* background: #f8f9fa; */
     cursor: default;
-    
+
     /* 过渡动画 */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
+
     /* 内容对齐 */
     align-items: center;
 }
