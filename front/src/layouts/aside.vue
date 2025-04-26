@@ -11,9 +11,10 @@ import {
     Promotion,
     CloseBold,
 } from '@element-plus/icons-vue'
-import { inject } from 'vue';
-import { drawerMenu } from '@/store/store';
+import { inject, ref } from 'vue';
+import { drawerMenu, loginDialog } from '@/store/store';
 import router from '@/router';
+import login from '@/views/login.vue';
 
 const goTo = (addr: string) => {
     router.push(addr)
@@ -30,7 +31,7 @@ const isLogin = () => {
 
 const logout = () => {
     localStorage.removeItem("token")
-    router.push("/home")
+    drawerMenu.close()
 }
 
 </script>
@@ -75,7 +76,7 @@ const logout = () => {
                         <span style="font-size: 1.3em; font-weight: bold;">登出</span>
                     </div>
                 </el-card>
-                <el-card v-else style="margin-top: auto; background-color:aliceblue;" @click="goTo('/login')">
+                <el-card v-else style="margin-top: auto; background-color:aliceblue;" @click="loginDialog.open()">
                     <div style="display: flex;">
                         <Promotion style="width: 1.6em; margin-right: 1em;" />
                         <span style="font-size: 1.3em; font-weight: bold;">登录</span>

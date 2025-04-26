@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { ElMessage } from "element-plus";
-import { drawerMenu } from "@/store/store";
+import { drawerMenu, loginDialog } from "@/store/store";
 
 const routes = [
   {
@@ -44,16 +44,16 @@ const routes = [
     name: "修改文章",
     component: () => import("../views/user/article/editArticle.vue"),
   },
-  {
-    path: "/login",
-    name: "登录",
-    component: () => import("../views/login.vue"),
-  },
-  {
-    path: "/register",
-    name: "注册",
-    component: () => import("../views/register.vue"),
-  },
+  // {
+  //   path: "/login",
+  //   name: "登录",
+  //   component: () => import("../views/login.vue"),
+  // },
+  // {
+  //   path: "/register",
+  //   name: "注册",
+  //   component: () => import("../views/register.vue"),
+  // },
   {
     path: "/article/:id",
     component: () => import("../views/article/index.vue"),
@@ -87,7 +87,7 @@ router.beforeEach((to, from, next) => {
     ElMessage({
       message: "请先登录",
     });
-    next("/login");
+    loginDialog.open();
   } else {
     next();
   }

@@ -9,10 +9,6 @@
                 </el-descriptions-item>
             </el-descriptions>
         </template>
-
-        <template #footer>
-            <el-button @click="close">关闭</el-button>
-        </template>
     </el-dialog>
 </template>
 
@@ -39,8 +35,7 @@ watch(() => props.modelValue, (val) => {
 watch(visible, (val) => {
     emit('update:modelValue', val)
 })
-
-const close = () => {
-    visible.value = false
-}
 </script>
+
+<style scoped>
+</style>

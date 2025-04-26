@@ -9,3 +9,13 @@ export const drawerMenu = reactive({
         this.isOpen = false
     }
 })
+
+export const loginDialog = reactive({
+    isOpen: false,
+    open() {
+        this.isOpen = true
+    },
+    close() {
+        this.isOpen = false
+    }
+})

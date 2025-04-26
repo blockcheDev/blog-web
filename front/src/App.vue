@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import index from './layouts/index.vue';
+import login from './views/login.vue';
 </script>
 
 <template>
   <index />
+  <login />
 </template>
 
 <style>

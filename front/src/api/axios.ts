@@ -1,6 +1,7 @@
 import router from "@/router";
 import axios from "axios";
 import { ElMessage } from "element-plus";
+import {loginDialog} from "@/store/store";
 const request = axios.create({
   baseURL: import.meta.env.VITE_API_URL as string,
   timeout: 5000,
@@ -32,7 +33,7 @@ request.interceptors.response.use(
     if (err.response.status === 401) {
       if (err.response.data.msg === "请登录") {
         localStorage.setItem("token", "");
-        router.push("/login");
+        loginDialog.open();
       }
       // ElMessage({
       // 	message: "登录过期，请重新登录",

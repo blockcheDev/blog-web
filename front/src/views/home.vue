@@ -47,16 +47,17 @@ const goToTag = () => {
 
 const showDialog = ref(false)
 const showRecentVisitors = async () => {
-    showDialog.value = true
     try {
         const res = await api.getRecentVisitors()
         Object.assign(RecentVisitors, res.data)
     } catch (err) {
         console.error(err)
+        return
     }
     for (var visitor of RecentVisitors) {
         visitor.Date = dayjs.unix(visitor.Ts).format("YYYY-MM-DD HH:mm:ss")
     }
+    showDialog.value = true
 }
 
 

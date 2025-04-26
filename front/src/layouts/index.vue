@@ -1,16 +1,10 @@
 <script setup lang="ts">
 import Aside from '@/layouts/aside.vue';
 import Header from '@/layouts/header.vue';
-import PageHeader from './PageHeader.vue';
 import router from '@/router';
 import { inject, ref } from 'vue';
 import { Menu } from '@element-plus/icons-vue'
 import { drawerMenu } from '@/store/store';
-
-const logout = () => {
-    localStorage.setItem("token", "")
-    router.push("/login")
-}
 
 </script>
 

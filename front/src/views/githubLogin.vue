@@ -10,8 +10,8 @@
 import api from '@/api/api';
 import { ref } from 'vue'
 import { onMounted } from 'vue'
-import router from '@/router';
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 const text = ref("请稍等 OvO")
 
@@ -23,14 +23,15 @@ onMounted(async () => {
         localStorage.setItem("token", res.headers.token)
         text.value = res.data.msg + " ♪(´▽｀)"
         setTimeout(() => {
-            router.push("/home")
+            window.close()
         }, 1500)
     } catch (err) {
         text.value = "对不起，你能重试一下吗 >_<"
         console.error(err)
         setTimeout(() => {
-            router.push("/login")
+            window.close()
         }, 1500)
     }
 })
+
 </script>
