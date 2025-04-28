@@ -11,7 +11,7 @@ import (
 
 type Article struct {
 	gorm.Model
-	ModifiedAt time.Time `gorm:"not null"` // 文章修改时间
+	ModifiedAt time.Time // 文章修改时间
 
 	CategoryID uint `gorm:"not null; index:category_id"`
 	UserID     uint `gorm:"not null"`
