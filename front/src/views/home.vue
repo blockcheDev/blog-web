@@ -4,20 +4,9 @@ import { list } from '@/store/article';
 import * as store from '@/store/article';
 import api from '@/api/api';
 import router from '@/router';
-import DataDialog from '@/components/DataDialog.vue'
-import dayjs from 'dayjs';
+import recentVisitors from '@/views/recentVisitors.vue'
+import { Histogram } from '@element-plus/icons-vue'
 
-const RecentVisitorsCount = reactive({
-    RecentVisitorsCount: 0,
-})
-interface Visitor {
-    IP: string,
-    Ts: number,
-    Region: string,
-
-    Date: string,
-}
-const RecentVisitors = reactive<Visitor[]>([])
 onMounted(async () => {
     try {
         const res = await api.getArticle("all")
@@ -28,8 +17,8 @@ onMounted(async () => {
     store.getAllCategory()
     store.getAllTag()
     try {
-        const res = await api.getRecentVisitorsCount()
-        Object.assign(RecentVisitorsCount, res.data)
+        const res = await api.getWebInfo()
+        Object.assign(WebInfo, res.data)
     } catch (err) {
         console.error(err)
     }
@@ -45,21 +34,13 @@ const goToTag = () => {
     router.push("/tag")
 }
 
-const showDialog = ref(false)
-const showRecentVisitors = async () => {
-    try {
-        const res = await api.getRecentVisitors()
-        Object.assign(RecentVisitors, res.data)
-    } catch (err) {
-        console.error(err)
-        return
-    }
-    for (var visitor of RecentVisitors) {
-        visitor.Date = dayjs.unix(visitor.Ts).format("YYYY-MM-DD HH:mm:ss")
-    }
-    showDialog.value = true
-}
+const recentVisitorsRef = ref<InstanceType<typeof recentVisitors>>()
 
+const WebInfo = reactive({
+    RecentVisitorsCount: 0,
+    VisitorCount: 0,
+    TotalPageViews: 0,
+})
 
 </script>
 
@@ -106,21 +87,28 @@ const showRecentVisitors = async () => {
                         </div>
                     </div>
                 </el-card>
-                <el-card class="recent-visitors" @click="showRecentVisitors()">
-                    <span>最近访客 {{ RecentVisitorsCount.RecentVisitorsCount }}</span>
+                <el-card class="web-info" @click="recentVisitorsRef?.open()">
+                    <div style="display: flex; align-items: center; gap: 0.3rem;">
+                        <el-icon :size="20"><Histogram /></el-icon>
+                        <span style="font-size: 1.2rem; font-weight: bold;">网站信息</span>
+                    </div>
+                    <div class="web-info-item">
+                        <span>总访客数</span>
+                        <span>{{ WebInfo.VisitorCount }}</span>
+                    </div>
+                    <div class="web-info-item">
+                        <span>近30天访客数</span>
+                        <span>{{ WebInfo.RecentVisitorsCount }}</span>
+                    </div>
+                    <div class="web-info-item">
+                        <span>总阅读量</span>
+                        <span>{{ WebInfo.TotalPageViews }}</span>
+                    </div>
                 </el-card>
             </div>
         </div>
-
-        <DataDialog v-model="showDialog" title="最近访客">
-            <el-table :data="RecentVisitors" style="width: 100%">
-                <el-table-column prop="IP" label="IP" width="180" />
-                <el-table-column prop="Date" label="Date" width="180" />
-                <el-table-column prop="Region" label="Region" />
-            </el-table>
-        </DataDialog>
+        <recentVisitors ref="recentVisitorsRef" />
     </div>
-
 </template>
 
 <style scoped>
@@ -177,14 +165,22 @@ const showRecentVisitors = async () => {
     transition: all 0.2s ease-in-out;
 }
 
-.recent-visitors {
+.web-info {
+    display: flex;
     width: 15vw;
     margin-left: 2vw;
 }
 
-.recent-visitors:hover {
+.web-info:hover {
     box-shadow: 0 0 0 8px #dadada;
     transition: all 0.2s ease-in-out;
+}
+
+.web-info-item {
+    display: flex;
+    width: 13vw;
+    justify-content: space-between;
+    margin-top: 0.5rem;
 }
 
 .list-anmi-move,

@@ -36,6 +36,6 @@ export default {
   loginWithGithub: (code: string) =>
     request.get(`/api/login/github?code=${code}`),
 
-  getRecentVisitorsCount: () => request.get("/api/recent_visitors_count"), // 获取最近访客数量
+  getWebInfo: () => request.get("/api/web_info"), // 获取网站信息
   getRecentVisitors: () => request.get("/api/recent_visitors") // 获取最近访客ip和region
 };
