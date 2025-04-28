@@ -29,7 +29,7 @@
     "@vue/tsconfig": "^0.4.0",
     "npm-run-all2": "^6.2.6",
     "prettier": "^3.5.3",
-    "sass": "^1.86.0",
+    "sass": "^1.87.0",
     "typescript": "~5.2.2",
     "unplugin-auto-import": "^19.1.2",
     "unplugin-vue-components": "^28.4.1",

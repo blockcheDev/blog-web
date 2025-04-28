@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import PageHeader from '@/layouts/PageHeader.vue';
-import { reactive, ref } from 'vue';
+import { ref, toRef } from 'vue';
 import passwordEdit from './passwordEdit.vue';
 import api from '@/api/api';
 import router from '@/router';
 const dialog = ref();
 
 const dialogDelete = ref(false)
-const formDelete = reactive({
+const formDelete = ref({
     Password: '',
 })
-const submitDelete = async (data: any) => {
+const submitDelete = async (data: typeof formDelete.value) => {
     try {
-        console.log(data)
         const res = await api.deleteUser(data)
         localStorage.setItem("token", "")
         dialogDelete.value = false

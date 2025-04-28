@@ -18,7 +18,7 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="saveEdit()">保存</el-button>
+                <el-button type="primary" @click="saveEdit(editForm)">保存</el-button>
                 <el-button @click="dialogFormVisible = false">取消</el-button>
             </el-form-item>
         </el-form>
@@ -28,26 +28,26 @@
 
 <script setup lang="ts">
 import api from '@/api/api';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps(['user'])
 
-const editForm = reactive({
+const editForm = ref({
     Name: "",
     Email: "",
     Telephone: "",
     Gender: "",
 });
 const openDialog = () => {
-    Object.assign(editForm, props.user)
+    Object.assign(editForm.value, props.user)
     dialogFormVisible.value = true
 }
 const dialogFormVisible = ref(false)
-const saveEdit = async () => {
+const saveEdit = async (form: typeof editForm.value) => {
     try {
-        const res = await api.modifyUser(editForm)
-        Object.assign(props.user, editForm)
-        console.log(editForm)
+        const res = await api.modifyUser(form)
+        Object.assign(props.user, form)
+        console.log(form)
         dialogFormVisible.value = false
         // location.reload()
     } catch (err) {
