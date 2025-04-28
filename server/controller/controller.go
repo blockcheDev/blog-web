@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 	"webback/config"
 	"webback/db"
@@ -11,6 +12,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+)
+
+// 国际化邮箱正则（支持中文等Unicode字符）
+var unicodeEmailRegex = regexp.MustCompile(
+	`^[\p{L}0-9.!#$%&'*+/=?^_{|}~-]+` + // 本地部分支持Unicode
+		`@([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+` +
+		`[\p{L}]{2,}$`, // 顶级域名支持Unicode
 )
 
 func ToHome(c *gin.Context) {
@@ -167,12 +175,13 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-	// if m, _ := regexp.MatchString(`^([\w\.\_]{2,10})@(\w{1,})\.([a-z]{2,4})$`, u.Email); !m {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"msg": "邮箱格式错误",
-	// 	})
-	// 	return
-	// }
+
+	if valid := unicodeEmailRegex.MatchString(u.Email); !valid {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"msg": "邮箱格式错误",
+		})
+		return
+	}
 
 	if strings.HasPrefix(u.Name, "github_") {
 		c.JSON(http.StatusBadRequest, gin.H{
