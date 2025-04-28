@@ -22,7 +22,7 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     viteCompression({
-      threshold: 1024000 // 对大于 1mb 的文件进行压缩
+      threshold: 300000 // 对大于 300000B 的文件进行压缩
     })
   ],
   resolve: {
