@@ -79,3 +79,13 @@ func (a *Article) AfterDelete(tx *gorm.DB) (err error) {
 	_, _ = RDB.Del(context.Background(), "article:all").Result()
 	return
 }
+
+func GetTotalPageViews() uint64 {
+	var total uint64
+	err := DB.Model(&Article{}).Select("SUM(page_views)").Scan(&total).Error
+	if err != nil {
+		logrus.Error("获取文章总浏览量失败: ", err)
+		return 0
+	}
+	return total
+}

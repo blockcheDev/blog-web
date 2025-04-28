@@ -52,7 +52,7 @@ func StartRouter() {
 		{
 			user.GET("/:id", controller.GetUserName) // 获取用户名称
 		}
-		base.GET("/recent_visitors_count", controller.GetRecentVisitorsCount) // 获取最近访客数量
+		base.GET("/web_info", controller.GetWebInfo) // 获取网站信息
 	}
 
 	// 需要登录的接口
