@@ -42,11 +42,15 @@ const saveEdit = async (form: typeof editForm.value) => {
         ElMessage({
             message: "新密码不一致",
         })
+    } else if (form.NewPassword === form.OldPassword) {
+        ElMessage({
+            message: "新密码不能与旧密码相同",
+        })
     } else {
         try {
             const res = await api.modifyUserPassword(form)
             dialogFormVisible.value = false
-            location.reload()
+            // location.reload()
         } catch (err) {
             console.error("更新密码失败", err)
         }

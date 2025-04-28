@@ -7,6 +7,7 @@ import (
 	"webback/util"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func ModifyUserInfo(c *gin.Context) {
@@ -45,9 +46,16 @@ func ModifyPassword(c *gin.Context) {
 	}
 
 	// 密码加盐后才存入数据库
-	user.Password = util.HashPassword(form.NewPassword)
+	hash_password := util.HashPassword(form.NewPassword)
 
-	db.DB.Save(&user)
+	err := db.DB.Model(&user).Where("name=?", name).Update("password", hash_password).Error
+	if err != nil {
+		logrus.Error("mysql修改用户密码失败: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "修改密码失败，请稍后再试",
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "密码修改成功",
 	})

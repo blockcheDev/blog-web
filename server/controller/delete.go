@@ -28,7 +28,14 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	db.DB.Delete(&user)
+	err = db.DB.Where("name=?", name).Delete(&db.User{}).Error
+	if err != nil {
+		logrus.Error("mysql删除用户失败: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "注销失败，请稍后再试",
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "注销成功",
 	})
