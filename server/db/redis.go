@@ -25,5 +25,8 @@ func InitRedis() (err error) {
 		logrus.Errorf("redis连接失败, err: %v", err)
 		return
 	}
+
+	// LoadWebVisitorFromRedis() // temp
+
 	return
 }

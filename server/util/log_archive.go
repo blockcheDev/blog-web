@@ -49,6 +49,4 @@ func LogArchive() {
 		logrus.Infof("Log file archived from %s to %s", src_file_path, dst_file_path)
 	})
 	job.Start()
-
-	logrus.Info("job next run time: ", job.Entries()[0].Next)
 }

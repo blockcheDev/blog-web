@@ -44,5 +44,6 @@ func InitMysql() (err error) {
 	DB.AutoMigrate(Tag{})
 	DB.AutoMigrate(Category{})
 	DB.AutoMigrate(Comment{})
+	DB.AutoMigrate(WebVisitor{})
 	return
 }
