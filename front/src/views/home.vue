@@ -7,6 +7,8 @@ import router from '@/router';
 import recentVisitors from '@/views/recentVisitors.vue'
 import { Histogram } from '@element-plus/icons-vue'
 
+const sort_status = ref<number>(0)
+
 onMounted(async () => {
     try {
         const res = await api.getArticle("all")
@@ -23,6 +25,20 @@ onMounted(async () => {
         console.error(err)
     }
 })
+
+const switchSort = () => {
+    if (sort_status.value === 0) {
+        list.sort((a, b) => {
+            return b.PageViews - a.PageViews
+        })
+        sort_status.value = 1
+    } else {
+        list.sort((a, b) => {
+            return b.ID - a.ID
+        })
+        sort_status.value = 0
+    }
+}
 
 const goToArticle = (id: any) => {
     router.push(`/article/${id}`)
@@ -48,21 +64,26 @@ const WebInfo = reactive({
     <div class="home-container">
         <div style="display: flex;">
             <div style="margin-left: 9vw; width: 70vw;">
-                <el-card class="atc-list" v-for="atc in list" :key="atc.ID" @click="goToArticle(atc.ID)">
-                    <div style="display: flex; flex-flow: column;">
-                        <span
-                            style="font-size: 1.5em;font-weight: bold; white-space: nowrap; display: inline-block; overflow: hidden; width: 98%;">
-                            {{ atc.Title }}
-                        </span>
-                        <span
-                            style=" white-space: nowrap; display: inline-block; overflow: hidden; width: 98%; margin-top: 10px;">
-                            {{ atc.Content }}
-                        </span>
-                        <div style="margin-top: 15px;">
-                            <el-tag v-for="tag in atc.Tags" style="margin-right: 10px;">{{ tag.Name }} </el-tag>
+                <TransitionGroup name="list">
+                    <el-card class="atc-list" v-for="atc in list" :key="atc.ID" @click="goToArticle(atc.ID)">
+                        <div style="display: flex; flex-flow: column;">
+                            <span
+                                style="font-size: 1.5em;font-weight: bold; white-space: nowrap; display: inline-block; overflow: hidden; width: 98%;">
+                                {{ atc.Title }}
+                            </span>
+                            <span
+                                style=" white-space: nowrap; display: inline-block; overflow: hidden; width: 98%; margin-top: 10px;">
+                                {{ atc.Content }}
+                            </span>
+                            <div style="margin-top: 15px; display: flex; justify-content: space-between;">
+                                <div>
+                                    <el-tag v-for="tag in atc.Tags" style="margin-right: 10px;">{{ tag.Name }} </el-tag>
+                                </div>
+                                <span style="color: #cccccc;">阅读 {{ atc.PageViews }}</span>
+                            </div>
                         </div>
-                    </div>
-                </el-card>
+                    </el-card>
+                </TransitionGroup>
             </div>
             <div style="display: flex; flex-flow: column; margin-left: auto;margin-right: 5vw;">
                 <el-card style="width: 15vw; margin-left: 2vw;">
@@ -87,9 +108,14 @@ const WebInfo = reactive({
                         </div>
                     </div>
                 </el-card>
+                <el-card @click="switchSort()" class="sort-button">
+                    <span style="font-size: 1.1rem; font-weight: bold;">{{ sort_status === 0 ? "发表时间" : "阅读量" }}排序</span>
+                </el-card>
                 <el-card class="web-info" @click="recentVisitorsRef?.open()">
                     <div style="display: flex; align-items: center; gap: 0.3rem;">
-                        <el-icon :size="20"><Histogram /></el-icon>
+                        <el-icon :size="20">
+                            <Histogram />
+                        </el-icon>
                         <span style="font-size: 1.2rem; font-weight: bold;">网站信息</span>
                     </div>
                     <div class="web-info-item">
@@ -183,22 +209,32 @@ const WebInfo = reactive({
     margin-top: 0.5rem;
 }
 
-.list-anmi-move,
+.list-move,
 /* 对移动中的元素应用的过渡 */
-.list-anmi-enter-active,
-.list-anmi-leave-active {
+.list-enter-active,
+.list-leave-active {
     transition: all 0.5s ease;
 }
 
-.list-anmi-enter-from,
-.list-anmi-leave-to {
+.list-enter-from,
+.list-leave-to {
     opacity: 0;
     transform: translateX(30px);
 }
 
 /* 确保将离开的元素从布局流中删除
   以便能够正确地计算移动的动画。 */
-.list-anmi-leave-active {
+.list-leave-active {
     position: absolute;
+}
+
+.sort-button {
+    width: 15vw;
+    margin-left: 2vw;
+    background-color:#eeeeee;
+}
+.sort-button:hover {
+    box-shadow: 0 0 0 8px #dadada;
+    transition: all 0.2s ease-in-out;
 }
 </style>
