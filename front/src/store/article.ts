@@ -12,6 +12,7 @@ export interface Article {
   Type: number; // 0-原创 1-转载
   Tags: Tag[];
   PageViews: number;
+  Likes: number; // 点赞数
 }
 export interface Category {
   ID: number;
@@ -55,6 +56,7 @@ const defaultData: Article = Object.freeze({
   Type: 0,
   Tags: [],
   PageViews: 0,
+  Likes: 0,
 });
 
 const list: Article[] = reactive([]);

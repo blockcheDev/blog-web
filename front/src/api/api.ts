@@ -37,5 +37,6 @@ export default {
     request.get(`/api/login/github?code=${code}`),
 
   getWebInfo: () => request.get("/api/web_info"), // 获取网站信息
-  getRecentVisitors: () => request.get("/api/recent_visitors") // 获取最近访客ip和region
+  getRecentVisitors: () => request.get("/api/recent_visitors"), // 获取最近访客ip和region
+  addArticleLikeRecord: (id: any) => request.post(`/api/article/${id}/like`), // 点赞文章
 };

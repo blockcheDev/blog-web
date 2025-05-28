@@ -21,6 +21,15 @@ const handleTagClick = (tag_id: number) => {
 const handleCategoryClick = (category_id: number) => {
     router.push(`/category/${category_id}`)
 }
+const handleLikeClick = async () => {
+  try {
+    await api.addArticleLikeRecord(props.data.ID)
+  } catch (err) {
+    console.error("点赞失败", err)
+    return
+  }
+  props.data.Likes += 1;
+}
 
 </script>
 
@@ -44,11 +53,14 @@ const handleCategoryClick = (category_id: number) => {
                 <div class="meta-item">
                     <span class="meta-text">{{ data.Type === 0 ? '原创' : '转载' }}</span>
                 </div>
-                <div class="meta-item-category" @click="handleCategoryClick(data.Category.ID)">
+                <div class="meta-item-clickable" @click="handleCategoryClick(data.Category.ID)">
                     <span class="meta-text">分类 {{ data.Category.Name }}</span>
                 </div>
                 <div class="meta-item">
                     <span class="meta-text">阅读量 {{ data.PageViews }}</span>
+                </div>
+                <div class="meta-item-clickable" @click="handleLikeClick()">
+                    <span class="meta-text">点赞 {{ data.Likes }}</span>
                 </div>
             </div>
 
@@ -93,7 +105,7 @@ const handleCategoryClick = (category_id: number) => {
   }
 
 /* 通用信息项样式 */
-  .meta-item, .meta-item-category {
+  .meta-item, .meta-item-clickable {
     padding: 0.5rem 0.9rem;   /* 内边距 */
     background: var(--el-fill-color-light); /* 背景色 */
     border-radius: 8px;     /* 圆角半径 */
@@ -102,7 +114,7 @@ const handleCategoryClick = (category_id: number) => {
     transition: background-color 0.3s ease, transform 0.5s ease; /* 背景与变换过渡 */
   }
 
-  .meta-item-category {
+  .meta-item-clickable {
     cursor: pointer;     /* 手型光标 */
     
     &:hover {

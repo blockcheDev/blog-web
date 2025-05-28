@@ -34,6 +34,9 @@ func GetArticle(db_article *db.Article) Article {
 		article.Tags[i].Name = tag.Name
 	}
 
+	// 获取点赞数
+	article.Likes = db.GetArticleLikeCount(db_article.ID)
+
 	return article
 }
 

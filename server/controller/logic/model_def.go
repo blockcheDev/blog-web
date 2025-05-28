@@ -18,6 +18,7 @@ type Article struct {
 	Type      int8 //0-原创 1-转载
 	Tags      []Tag
 	PageViews uint64
+	Likes     uint64 // 文章点赞数
 }
 type Articles []Article
 

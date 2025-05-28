@@ -3,6 +3,7 @@ package controller
 import (
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 	"webback/db"
 	"webback/util"
@@ -144,5 +145,34 @@ func PushComment(c *gin.Context) {
 	db.DB.Create(&comment)
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "发送成功",
+	})
+}
+
+func AddArticleLikeRecord(c *gin.Context) {
+	article_id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"msg": "文章ID格式错误",
+		})
+		return
+	}
+
+	ip := util.GetRealIP(c)
+
+	is_exist, err := db.AddArticleLikeRecord(uint(article_id), ip)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "点赞失败，稍后再试",
+		})
+		return
+	}
+	if is_exist {
+		c.JSON(http.StatusForbidden, gin.H{
+			"msg": "已经赞过了",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "点赞成功",
 	})
 }

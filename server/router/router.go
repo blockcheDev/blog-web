@@ -47,6 +47,7 @@ func StartRouter() {
 			article.GET("/:id/comment", controller.GetCommentListByArticle) // 根据文章id获取评论列表
 			// article.GET("/:id/tag", controller.GetTagByArticle)             // 根据文章id获取标签名称列表
 			// article.GET("/:id/tagid", controller.GetTagIDByArticle)         // 根据文章id获取标签id列表
+			article.POST("/:id/like", controller.AddArticleLikeRecord) // 点赞文章
 		}
 		user := base.Group("/user")
 		{

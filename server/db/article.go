@@ -36,6 +36,12 @@ type ArticleCategory struct {
 	CategoryID uint `gorm:"not null"`
 }
 
+type ArticleLike struct {
+	gorm.Model
+	ArticleID uint   `gorm:"not null; index:idx1,priority:1; index:idx2,priority:2"`
+	LikeIP    string `gorm:"not null; index:idx1,priority:2; index:idx2,priority:1"` // 点赞IP
+}
+
 func GetArticle(ID interface{}) *Article {
 	article := Article{}
 	DB.Where("id=?", ID).First(&article)
@@ -88,4 +94,37 @@ func GetTotalPageViews() uint64 {
 		return 0
 	}
 	return total
+}
+
+func GetArticleLikeCount(article_id uint) uint64 {
+	var count int64
+	err := DB.Model(&ArticleLike{}).Where("article_id=?", article_id).Count(&count).Error
+	if err != nil {
+		logrus.Error("获取文章点赞数失败: ", err)
+		return 0
+	}
+	return uint64(count)
+}
+
+func AddArticleLikeRecord(article_id uint, like_ip string) (is_exist bool, err error) {
+	var count int64
+	err = DB.Model(&ArticleLike{}).Where("article_id=? and like_ip=?", article_id, like_ip).Count(&count).Error
+	if err != nil {
+		logrus.Error("查询文章点赞记录失败: ", err)
+		return false, err
+	}
+	if count > 0 {
+		return true, nil
+	}
+
+	like := ArticleLike{
+		ArticleID: article_id,
+		LikeIP:    like_ip,
+	}
+	err = DB.Create(&like).Error
+	if err != nil {
+		logrus.Error("添加文章点赞记录失败: ", err)
+		return false, err
+	}
+	return false, nil
 }
