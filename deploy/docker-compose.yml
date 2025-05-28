@@ -36,6 +36,7 @@ services:
     volumes:
       - ${DATA_DIRECTORY}/data/backup-server/backups:/backups
       - ${DATA_DIRECTORY}/data/backup-server/logs:/logs
+      - /etc/hostname:/etc/host_machine_name:ro
     environment:
       - TZ=Asia/Shanghai
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}

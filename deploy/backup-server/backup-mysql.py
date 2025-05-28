@@ -23,6 +23,10 @@ REGION = 'ap-guangzhou'      # 替换为用户的 region，已创建桶归属的
 config = CosConfig(Region=REGION, SecretId=COS_SECRET_ID, SecretKey=COS_SECRET_KEY)
 client = CosS3Client(config)
 
+def get_host_machine_name():
+    with open('/etc/host_machine_name', 'r') as f:
+        name = f.read().strip()
+    return name if name else "unknown_host"
 
 def log(message):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -59,7 +63,8 @@ def backup_mysql():
         os.makedirs(LOG_DIR, exist_ok=True)
         
         timestamp = datetime.now().strftime("%Y%m%d%H")
-        file_name = f"{MYSQL_DATABASE}_{timestamp}.sql.gz"
+
+        file_name = f"{MYSQL_DATABASE}_{get_host_machine_name()}_{timestamp}.sql.gz"
         file_path = f"{BACKUP_DIR}/{file_name}"
         
         # 使用环境变量避免密码暴露在命令行
@@ -91,7 +96,7 @@ def schedule_daily(task, hour=4):
 
 if __name__ == "__main__":
     # 先执行一次备份，测试用
-    # backup_mysql()
+    backup_mysql()
     
     # 每天4点执行备份
     schedule_daily(backup_mysql, 4)
