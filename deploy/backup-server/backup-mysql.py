@@ -96,7 +96,7 @@ def schedule_daily(task, hour=4):
 
 if __name__ == "__main__":
     # 先执行一次备份，测试用
-    backup_mysql()
+    # backup_mysql()
     
     # 每天4点执行备份
     schedule_daily(backup_mysql, 4)

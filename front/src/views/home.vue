@@ -79,7 +79,10 @@ const WebInfo = reactive({
                                 <div>
                                     <el-tag v-for="tag in atc.Tags" style="margin-right: 10px;">{{ tag.Name }} </el-tag>
                                 </div>
-                                <span style="color: #cccccc;">阅读 {{ atc.PageViews }}</span>
+                                <div style="display: flex; gap: 1rem;">
+                                    <span style="color: #cccccc;">点赞 {{ atc.Likes }}</span>
+                                    <span style="color: #cccccc;">阅读 {{ atc.PageViews }}</span>
+                                </div>
                             </div>
                         </div>
                     </el-card>
@@ -186,7 +189,7 @@ const WebInfo = reactive({
 .atc-list:hover {
     /* border-color: #dadada;
     border-width: 8px; */
-    width: 65vw;
+    transform: scale(1.07);
     box-shadow: 0 0 0 8px #dadada;
     transition: all 0.2s ease-in-out;
 }
