@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Aside from '@/layouts/aside.vue';
 import Header from '@/layouts/header.vue';
+import Footer from '@/layouts/footer.vue';
 import router from '@/router';
 import { inject, ref } from 'vue';
 import { Menu } from '@element-plus/icons-vue'
@@ -27,6 +28,9 @@ import { drawerMenu } from '@/store/store';
                     </router-view>
                 </el-main>
             </el-container>
+            <el-footer>
+                <Footer />
+            </el-footer>
         </el-container>
     </div>
 </template>

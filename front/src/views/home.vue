@@ -72,7 +72,7 @@ const WebInfo = reactive({
                                 {{ atc.Title }}
                             </span>
                             <span
-                                style=" white-space: nowrap; display: inline-block; overflow: hidden; width: 98%; margin-top: 10px;">
+                                style="white-space: nowrap; display: inline-block; overflow: hidden; width: 98%; margin-top: 10px;">
                                 {{ atc.Content }}
                             </span>
                             <div style="margin-top: 15px; display: flex; justify-content: space-between;">
