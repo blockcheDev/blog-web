@@ -57,11 +57,46 @@
 
 #### 1. 要先补全缺少的配置（为了保密所以没有放上来）
 
-- server/config/config.yaml
-- deploy/mysql/blog.sql
-- deploy/web/hitori.cn.key
-- deploy/web/hitori.cn.pem
+- deploy/web/hitori.cn_bundle.crt（域名的SSL证书，替换为自己的）
+- deploy/web/hitori.cn.key（同上）
+
 - deploy/.env
+```
+DATA_DIRECTORY=./blockche-blog
+
+REDIS_PORT=6379
+
+MYSQL_ROOT_PASSWORD=xxxx
+MYSQL_PORT=3306
+
+SERVER_PORT=xxxx
+
+COS_SECRET_ID=xxxx
+COS_SECRET_KEY=xxxx
+```
+
+- deploy/mysql/blog.sql（用于数据库初始化）
+
+- server/config/config.yaml
+```yaml
+github:
+  client_id: "xxxx"
+  client_secret: "xxxx"
+
+mysql:
+  address: "172.17.0.1:3306"
+  user: "root"
+  password: "xxxx"
+  database: "blog"
+
+redis:
+  address: "172.17.0.1:6379"
+  password: "xxxx"
+  database: 0 # use default DB
+
+jwt:
+  key: "xxxx"
+```
 
 #### 2. 一键启动
 
