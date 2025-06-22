@@ -11,16 +11,13 @@ const sort_status = ref<number>(0)
 
 onMounted(async () => {
     try {
-        const res = await api.getArticle("all")
-        Object.assign(list, res.data)
-    } catch (err) {
-        console.error(err)
-    }
-    store.getAllCategory()
-    store.getAllTag()
-    try {
-        const res = await api.getWebInfo()
-        Object.assign(WebInfo, res.data)
+        store.getAllCategory()
+        store.getAllTag()
+
+        const article_res = api.getArticle("all")
+        const webinfo_res = api.getWebInfo()
+        Object.assign(list, (await article_res).data)
+        Object.assign(WebInfo, (await webinfo_res).data)
     } catch (err) {
         console.error(err)
     }
