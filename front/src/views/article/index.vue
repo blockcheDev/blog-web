@@ -37,6 +37,9 @@ onMounted(async () => {
     } catch (err) {
         console.error("文章获取失败", err)
     }
+
+    // 更新title
+    document.title = (data.Title === "" ? "为什么会没有title" : data.Title) + " - " + document.title
 })
 
 </script>

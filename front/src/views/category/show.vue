@@ -12,12 +12,18 @@ const list: Article[] = reactive([])
 const title = ref("")
 
 onMounted(async () => {
+    let name = ""
     try {
         const res = await api.getCategory(route.params.id)
-        title.value = `分类：${res.data.Name}`
+        name = res.data.Name
+        title.value = `分类：${name}`
     } catch (err) {
         console.error(err)
     }
+
+    // 更新title
+    document.title = (name === "" ? "为什么会没有title" : name) + " - " + document.title
+
     try {
         const res = await api.getArticleListByCategory(route.params.id)
         console.log(res.data)

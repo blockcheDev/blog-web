@@ -18,6 +18,7 @@ const routes = [
     path: "/home",
     name: "首页",
     component: () => import("../views/home.vue"),
+    // meta: { title: '首页 - blockche blog' },
   },
   {
     path: "/user/info",
@@ -60,6 +61,7 @@ const routes = [
   },
   {
     path: "/category",
+    name: "分类",
     component: () => import("../views/category/index.vue"),
   },
   {
@@ -68,6 +70,7 @@ const routes = [
   },
   {
     path: "/tag",
+    name: "标签",
     component: () => import("../views/tag/index.vue"),
   },
   {
@@ -82,6 +85,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  // 设置title
+  if (to.name) {
+    document.title = to.name as string + " - blockche blog";  // 动态设置标题
+  } else {
+    document.title = "blockche blog"; // title的前导空格会被自动去掉。。。。。。
+  }
+
   const tokenString = localStorage.getItem("token");
   if (to.path.indexOf("/user") === 0 && !tokenString) {
     ElMessage({
