@@ -89,7 +89,8 @@ const WebInfo = reactive({
                 <el-card style="width: 15vw; margin-left: 2vw;">
                     <div style="display: flex; flex-flow: column;">
                         <el-avatar style="width: 6vw; height: 6vw; margin: 1vh auto 0 auto;"
-                            src="https://avatars.githubusercontent.com/u/89156012?v=4" />
+                            src="https://blog-pic-1340568599.cos.ap-guangzhou.myqcloud.com/home-avator-hitori.webp" />
+                            <!-- src="https://avatars.githubusercontent.com/u/89156012?v=4" /> -->
                         <span style="margin: 2vh auto 0 auto; font-weight: bold; font-size: 1.6em;">blockche</span>
                         <span style="margin: 0.4vh auto 0 auto; font-size: 1.1em;">无限进步</span>
                         <div style="display: flex; flex-flow: column; margin-top: 2vh;">
