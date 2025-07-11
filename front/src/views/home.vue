@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { list } from '@/store/article';
 import * as store from '@/store/article';
 import api from '@/api/api';
 import router from '@/router';
 import recentVisitors from '@/views/recentVisitors.vue'
 import { Histogram } from '@element-plus/icons-vue'
+import { useSeoMeta } from '@unhead/vue'
+
+const description = ref("欢迎来到 blockche blog，这里会随意分享一些东西。")
+useSeoMeta({
+    title: computed(() => `首页 - blockche blog`),
+    description: computed(() => description.value),
+})
 
 const sort_status = ref<number>(0)
 
@@ -18,6 +25,10 @@ onMounted(async () => {
         const webinfo_res = api.getWebInfo()
         Object.assign(list, (await article_res).data)
         Object.assign(WebInfo, (await webinfo_res).data)
+
+        for (const article of list) {
+            description.value += article.Title
+        }
     } catch (err) {
         console.error(err)
     }

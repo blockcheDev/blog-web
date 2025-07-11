@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import api from '@/api/api';
 import { useRoute } from 'vue-router'
-import { reactive, onMounted, ref } from 'vue'
+import { reactive, onMounted, ref, computed } from 'vue'
 import { marked } from 'marked'
 import hljs from 'highlight.js';
 import articleHeader from './articleHeader.vue'
@@ -9,11 +9,11 @@ import comment from './comment.vue';
 import info from './info.vue'
 import { defaultData } from '@/store/article'
 import type { Article } from '@/store/article'
+import { useSeoMeta } from '@unhead/vue'
 
 const data: Article = reactive(JSON.parse(JSON.stringify(defaultData))) // 深拷贝，使得data是独立于defaultData的副本
 
 const route = useRoute()
-const html = ref()
 marked.setOptions({
     renderer: new marked.Renderer(),
     gfm: true,
@@ -33,13 +33,14 @@ onMounted(async () => {
     try {
         const res = await api.getArticle(route.params.id)
         Object.assign(data, res.data)
-        html.value = marked(data.Content)
     } catch (err) {
         console.error("文章获取失败", err)
     }
+})
 
-    // 更新title
-    document.title = (data.Title === "" ? "为什么会没有title" : data.Title) + " - " + document.title
+useSeoMeta({
+    title: computed(() => `${(data.Title === "" ? "为什么会没有title" : data.Title)} - blockche blog`),
+    description: computed(() => data.Content),
 })
 
 </script>
@@ -59,7 +60,6 @@ onMounted(async () => {
                 <articleHeader :data="data" />
             </el-card>
             <el-card>
-                <!-- <div v-html="html"></div> -->
                 <v-md-editor :model-value="data.Content" mode="preview"></v-md-editor>
             </el-card>
             <el-card>

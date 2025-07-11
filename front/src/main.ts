@@ -21,4 +21,8 @@ VMdEditor.use(githubTheme, {
 });
 app.use(VMdEditor);
 
+import { createHead } from '@unhead/vue/client'
+const head = createHead()
+app.use(head)
+
 app.mount("#app");
