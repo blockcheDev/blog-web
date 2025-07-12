@@ -73,11 +73,22 @@ services:
       - ./web/nginx.conf:/etc/nginx/nginx.conf
       - ./web/hitori.cn_bundle.crt:/usr/local/nginx/conf/cert/hitori.cn_bundle.crt
       - ./web/hitori.cn.key:/usr/local/nginx/conf/cert/hitori.cn.key
-      - ${DATA_DIRECTORY}/data/nginx/conf.d:/etc/nginx/conf.d
       - ${DATA_DIRECTORY}/data/nginx/logs:/var/log/nginx
+      - ${DATA_DIRECTORY}/data/sitemap-generator:/sitemap-generator
     environment:
       - TZ=Asia/Shanghai
     ports:
       - 80:80
       - 443:443
       - 11111:11111
+
+  sitemap-generator:
+    build:
+      dockerfile: sitemap-generator/Dockerfile
+    container_name: sitemap-generator
+    restart: always
+    volumes:
+      - ./sitemap-generator/sitemap-generator.py:/app/sitemap-generator.py
+      - ${DATA_DIRECTORY}/data/sitemap-generator:/app/data
+    environment:
+      - TZ=Asia/Shanghai
