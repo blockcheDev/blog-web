@@ -32,6 +32,11 @@
 - 文章编辑使用可视化Markdown编辑器
 - 界面好看
 
+其他容器：
+
+- Python脚本每天凌晨4:00自动将服务器的MySQL数据备份至腾讯云COS，可随时获取对应日期的博客数据。
+- Python脚本每间隔一个小时从后台拉取博客文章列表，更新sitemap.xml(https://www.hitori.cn/sitemap.xml)
+
 ### 使用技术
 
 后端技术栈：
@@ -41,6 +46,9 @@
 - Gorm
 - MySQL
 - Redis
+- Nginx
+- Python
+- Docker
 
 前端技术栈：
 
@@ -49,7 +57,6 @@
 - TypeScript
 - Element Plus
 - Axios
-- Nginx
 
 ## 启动项目
 
