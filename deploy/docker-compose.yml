@@ -1,3 +1,6 @@
+volumes:
+  mysql_data:
+
 services:
   redis:
     image: redis:7.4
@@ -16,7 +19,7 @@ services:
     container_name: mysql
     restart: always
     volumes:
-      - ${DATA_DIRECTORY}/data/mysql:/var/lib/mysql
+      - mysql_data:/var/lib/mysql  # 使用命名卷来持久化数据
       - ./mysql/blog.sql:/docker-entrypoint-initdb.d/blog.sql # SQL initialization file
     environment:
       - TZ=Asia/Shanghai
@@ -71,8 +74,8 @@ services:
     restart: always
     volumes:
       - ./web/nginx.conf:/etc/nginx/nginx.conf
-      - ./web/hitori.cn_bundle.crt:/usr/local/nginx/conf/cert/hitori.cn_bundle.crt
-      - ./web/hitori.cn.key:/usr/local/nginx/conf/cert/hitori.cn.key
+      - ./web/anonchan.cc_bundle.crt:/usr/local/nginx/conf/cert/anonchan.cc_bundle.crt
+      - ./web/anonchan.cc.key:/usr/local/nginx/conf/cert/anonchan.cc.key
       - ${DATA_DIRECTORY}/data/nginx/logs:/var/log/nginx
       - ${DATA_DIRECTORY}/data/sitemap-generator:/sitemap-generator
     environment:
