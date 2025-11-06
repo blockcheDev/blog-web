@@ -3,7 +3,7 @@
         <DataDialog v-model="loginDialog.isOpen" title="登录" width="30vw">
             <div style="display: flex; flex-flow: column; align-items: center;">
                 <el-form :model="form" label-width="auto" style="width: 80%;">
-                    <el-form-item label="用户名">
+                    <el-form-item label="账号">
                         <el-input class="input" v-model="form.Name" />
                     </el-form-item>
                     <el-form-item label="密码">

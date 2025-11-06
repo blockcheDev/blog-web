@@ -19,7 +19,7 @@
                     <el-card style="width: 25vw;">
                         <div style="display: flex; ">
                             <User style="width: 1.5em;" />
-                            <span style="margin-left: 1em;">用户名</span>
+                            <span style="margin-left: 1em;">账号</span>
                             <span style="margin-left: auto;">{{ user.Name }}</span>
                         </div>
                     </el-card>

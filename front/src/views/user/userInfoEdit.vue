@@ -1,7 +1,7 @@
 <template>
     <el-dialog v-model="dialogFormVisible" title="编辑用户信息">
         <el-form v-model="editForm" label-width="80px">
-            <el-form-item label="用户名">
+            <el-form-item label="账号">
                 <el-input v-model="editForm.Name" autocomplete="on" disabled="true" />
             </el-form-item>
             <el-form-item label="邮箱">
