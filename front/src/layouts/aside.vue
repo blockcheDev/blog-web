@@ -11,10 +11,37 @@ import {
     Promotion,
     CloseBold,
 } from '@element-plus/icons-vue'
-import { inject, ref } from 'vue';
+import { inject, ref, computed, onMounted, onUnmounted } from 'vue';
 import { drawerMenu, loginDialog } from '@/store/store';
 import router from '@/router';
 import login from '@/views/login.vue';
+
+// 响应式窗口宽度
+const windowWidth = ref(window.innerWidth);
+
+// 根据窗口宽度计算 drawer 尺寸
+const drawerSize = computed(() => {
+    if (windowWidth.value < 768) {
+        return '60vw'; // 移动端
+    } else if (windowWidth.value < 1024) {
+        return '40vw'; // 平板
+    } else {
+        return '25vw'; // 桌面端
+    }
+});
+
+// 监听窗口大小变化
+const handleResize = () => {
+    windowWidth.value = window.innerWidth;
+};
+
+onMounted(() => {
+    window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('resize', handleResize);
+});
 
 const goTo = (addr: string) => {
     router.push(addr)
@@ -38,7 +65,14 @@ const logout = () => {
   
 <template>
     <div>
-        <el-drawer v-model="drawerMenu.isOpen" title="I am the title" :with-header="false" direction="ltr" size="20vw">
+        <el-drawer 
+            v-model="drawerMenu.isOpen" 
+            title="I am the title" 
+            :with-header="false" 
+            direction="ltr" 
+            :size="drawerSize"
+            class="responsive-drawer"
+        >
             <div style="display: flex; flex-flow: column; height: 100%;">
                 <el-card style="margin-top: 30px;" @click="goTo('/home')">
                     <div style="display: flex;">

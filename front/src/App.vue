@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import index from './layouts/index.vue';
 import login from './views/login.vue';
+import CursorOverlay from './components/CursorOverlay.vue';
 </script>
 
 <template>
+  <CursorOverlay :size="48" />
   <index />
   <login />
 </template>
@@ -69,4 +71,6 @@ body {
   width: 100vw;
   overflow: hidden;
 }
+
+
 </style>

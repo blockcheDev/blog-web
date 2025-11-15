@@ -65,7 +65,9 @@ const handleLikeClick = async () => {
             </div>
 
             <div class="meta-group" style="margin-top: 0.5rem;">
-                <el-tag v-for="(tag, index) in data.Tags" :key="index" class="tag-item"
+                <el-tag v-for="(tag, index) in data.Tags" :key="index" class="article-tag"
+                    size="small"
+                    effect="plain"
                     @click="handleTagClick(tag.ID)">
                     {{ tag.Name }}
                 </el-tag>
@@ -76,67 +78,100 @@ const handleLikeClick = async () => {
 
 <style scoped lang="scss">
 .article-header {
-  margin: 0 auto;          /* 水平居中 */
-  padding: 1rem;         /* 内边距 */
-//   transition: all 0.3s ease; /* 过渡动画 */
+  margin: 0 auto;
+  padding: 0;
 
   .title-wrapper {
-    margin-bottom: 1rem; /* 下边距 */
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #e9ecef;
     
     .title {
-      font-size: 2rem;      /* 字体大小 */
-      text-align: center;   /* 水平居中 */
-      margin: 0;            /* 清除默认边距 */
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin: 0;
+      color: #1a1a1a;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
     }
   }
 
   .meta-container {
-    display: flex;           /* 弹性布局 */
-    flex-direction: column; /* 垂直排列 */
-    gap: 0.8rem;              /* 子元素间距 */
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
   }
 
   .meta-group {
     display: flex;
-    flex-wrap: wrap;        /* 允许换行 */
-    align-items: center;    /* 垂直居中 */
-    justify-content: center;/* 水平居中 */
-    gap: 1rem;              /* 元素间距 */
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
   }
 
 /* 通用信息项样式 */
   .meta-item, .meta-item-clickable {
-    padding: 0.5rem 0.9rem;   /* 内边距 */
-    background: var(--el-fill-color-light); /* 背景色 */
-    border-radius: 8px;     /* 圆角半径 */
-    display: inline-flex;   /* 行内弹性布局 */
-    align-items: center;    /* 垂直居中 */
-    transition: background-color 0.3s ease, transform 0.5s ease; /* 背景与变换过渡 */
+    padding: 0.45rem 0.9rem;
+    background: #f5f6f7;
+    border-radius: 18px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.25s ease;
+    border: 1px solid transparent;
   }
 
   .meta-item-clickable {
-    cursor: pointer;     /* 手型光标 */
+    cursor: pointer;
     
     &:hover {
-      transform: translateY(-3px); /* 悬停上移 */
-      box-shadow: 0 2px 8px var(--el-box-shadow-light); /* 阴影效果 */
+      transform: translateY(-2px);
+      background: #e9ecef;
+      border-color: #dee2e6;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    &:active {
+      transform: translateY(0);
     }
   }
 
   /* 文字样式 */
   .meta-text {
-    font-size: 0.8rem;      /* 字体大小 */
-    color: var(--el-text-color-secondary); /* 文字颜色 */
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
   }
 
   /* 标签样式 */
-  .tag-item {
-    cursor: pointer;     /* 手型光标 */
-    transition: transform 0.5s ease; /* 变换动画 */
+  .article-tag {
+    margin: 0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 18px;
     
     &:hover {
-    transform: translateY(-3px); /* 悬停上移 */
-    box-shadow: 0 2px 8px var(--el-box-shadow-light); /* 阴影效果 */
+      opacity: 0.8;
+    }
+  }
+}
+
+/* 平板端适配 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .article-header {
+    .title {
+      font-size: 1.85rem;
+    }
+    
+    .title-wrapper {
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.1rem;
+    }
+    
+    .meta-group {
+      gap: 0.6rem;
     }
   }
 }
@@ -144,14 +179,71 @@ const handleLikeClick = async () => {
 /* 移动端适配 */
 @media (max-width: 768px) {
   .article-header {
-    padding: 1rem;         /* 缩小内边距 */
-    
-    .title {
-      font-size: 1.5rem;  /* 标题缩小 */
+    .title-wrapper {
+      margin-bottom: 1.4rem;
+      padding-bottom: 0.9rem;
     }
     
-    .tag-item[effect="plain"] {
-      font-size: 0.8rem;  /* 标签缩小 */
+    .title {
+      font-size: 1.5rem;
+    }
+    
+    .meta-container {
+      gap: 0.75rem;
+    }
+    
+    .meta-group {
+      gap: 0.55rem;
+    }
+    
+    .meta-item, .meta-item-clickable {
+      padding: 0.38rem 0.75rem;
+      border-radius: 14px;
+    }
+    
+    .meta-text {
+      font-size: 0.8rem;
+    }
+    
+    .article-tag {
+      font-size: 0.8rem;
+      border-radius: 14px;
+    }
+  }
+}
+
+/* 小屏幕移动端适配 */
+@media (max-width: 480px) {
+  .article-header {
+    .title-wrapper {
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.8rem;
+    }
+    
+    .title {
+      font-size: 1.35rem;
+    }
+    
+    .meta-container {
+      gap: 0.7rem;
+    }
+    
+    .meta-group {
+      gap: 0.5rem;
+    }
+    
+    .meta-item, .meta-item-clickable {
+      padding: 0.35rem 0.7rem;
+      border-radius: 12px;
+    }
+    
+    .meta-text {
+      font-size: 0.75rem;
+    }
+    
+    .article-tag {
+      font-size: 0.75rem;
+      border-radius: 12px;
     }
   }
 }

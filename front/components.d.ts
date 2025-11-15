@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    CursorOverlay: typeof import('./src/components/CursorOverlay.vue')['default']
     DataDialog: typeof import('./src/components/DataDialog.vue')['default']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
