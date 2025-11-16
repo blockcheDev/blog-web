@@ -4,7 +4,7 @@
 
 ## 在线预览
 
-博客链接：[hitori.cn](https://www.hitori.cn)（已配置ssl，可使用https访问）
+博客链接：[anonchan.cc](https://anonchan.cc)（已配置ssl，可使用https访问）
 
 ![image](https://github.com/blockcheDev/blog-web/assets/89156012/afb8b63b-88c9-423a-abfd-27b5a590a7b1)
 
@@ -35,7 +35,7 @@
 其他容器：
 
 - Python脚本每天凌晨4:00自动将服务器的MySQL数据备份至腾讯云COS，可随时获取对应日期的博客数据。
-- Python脚本每间隔一个小时从后台拉取博客文章列表，更新sitemap.xml(https://www.hitori.cn/sitemap.xml)
+- Python脚本每间隔一个小时从后台拉取博客文章列表，更新sitemap.xml(https://anonchan.cc/sitemap.xml)
 
 ### 使用技术
 
@@ -64,8 +64,8 @@
 
 #### 1. 要先补全缺少的配置（为了保密所以没有放上来）
 
-- deploy/web/hitori.cn_bundle.crt（域名的SSL证书，替换为自己的）
-- deploy/web/hitori.cn.key（同上）
+- deploy/web/anonchan.cc_bundle.crt（域名的SSL证书，替换为自己的）
+- deploy/web/anonchan.cc.key（同上）
 
 - deploy/.env
 ```
@@ -156,10 +156,10 @@ npm run dev
     # HTTPS server
     server {
        listen       443 ssl;
-       server_name  hitori.cn;
+       server_name  anonchan.cc;
 
-       ssl_certificate      /usr/local/nginx/conf/cert/hitori.cn.pem;
-       ssl_certificate_key  /usr/local/nginx/conf/cert/hitori.cn.key;
+       ssl_certificate      /usr/local/nginx/conf/cert/anonchan.cc.pem;
+       ssl_certificate_key  /usr/local/nginx/conf/cert/anonchan.cc.key;
 
        ssl_session_cache    shared:SSL:1m;
        ssl_session_timeout  5m;
@@ -167,9 +167,9 @@ npm run dev
        ssl_ciphers  HIGH:!aNULL:!MD5;
        ssl_prefer_server_ciphers  on;
 
-        # https代理到http后端服务,注意前端访问后端的地址要改为https://www.hitori.cn/api
+        # https代理到http后端服务,注意前端访问后端的地址要改为https://anonchan.cc/api
        location /api {
-            proxy_pass http://www.hitori.cn:8080/api;
+            proxy_pass http://anonchan.cc:8080/api;
         }
 
        location / {
@@ -183,13 +183,13 @@ npm run dev
 需要注意的是，由于前端是https，浏览器是不允许访问后端的http接口的，所以我们还需要用Nginx将https的请求反向代理到后端的http接口，即加上这段配置：
 
 ```
-        # https代理到http后端服务,注意前端访问后端的地址要改为https://www.hitori.cn/api
+        # https代理到http后端服务,注意前端访问后端的地址要改为https://anonchan.cc/api
        location /api {
-            proxy_pass http://www.hitori.cn:8080/api;
+            proxy_pass http://anonchan.cc:8080/api;
         }
 ```
 
-添加这段配置后，当前端访问 https://www.hitori.cn/api 时，Nginx会将其代理到 http://www.hitori.cn:8080/api ，所以前端axios的后端地址配置也要修改为https方式了。
+添加这段配置后，当前端访问 https://anonchan.cc/api 时，Nginx会将其代理到 http://anonchan.cc:8080/api ，所以前端axios的后端地址配置也要修改为https方式了。
 
 
 
