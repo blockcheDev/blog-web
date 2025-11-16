@@ -5,7 +5,7 @@ import CursorOverlay from './components/CursorOverlay.vue';
 </script>
 
 <template>
-  <CursorOverlay :size="48" />
+  <CursorOverlay />
   <index />
   <login />
 </template>

@@ -1,143 +1,156 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
-// Props: 光标大小、颜色、混合模式
-const props = withDefaults(defineProps<{
-  size?: number;
-  color?: string;
-  blendMode?: 'difference' | 'exclusion' | 'screen';
-}>(), {
-  size: 40,
-  color: '#eeeeee',
-  blendMode: 'difference'
-});
+// 光标位置和状态
+const cursorX = ref(0);
+const cursorY = ref(0);
+const isVisible = ref(false);
+const isHover = ref(false);
+const cursorElement = ref<HTMLDivElement | null>(null);
 
-// 状态：光标位置、可见性、鼠标按下状态、文本选择状态
-const x = ref(0);
-const y = ref(0);
-const visible = ref(false);
-const isMouseDown = ref(false);
-const isSelecting = ref(false);
-const dotRef = ref<HTMLDivElement | null>(null);
-let rafId: number | null = null;
+// 尺寸配置
+const CURSOR_SIZE = 8; // 光标基础尺寸
+const HOVER_SCALE = 6;  // 悬停时的缩放倍率 (8px * 6 = 48px)
 
-// 计算属性：光标尺寸、透明度、缩放
-const cursorSize = computed(() => Math.max(10, props.size));
-const cursorOpacity = computed(() => visible.value && !isMouseDown.value && !isSelecting.value ? 1 : 0);
-const cursorScale = computed(() => isMouseDown.value ? 0 : 1);
-// 鼠标移动：更新位置并显示光标
-const handleMove = (e: MouseEvent) => {
-  x.value = e.clientX;
-  y.value = e.clientY;
-  visible.value = true;
-};
-
-// 鼠标按下：标记按下状态
-const handleDown = (e: MouseEvent) => {
-  if (e.button === 0) {
-    isMouseDown.value = true;
+// 判断元素是否可交互
+const isInteractive = (el: Element | null): boolean => {
+  if (!el) return false;
+  
+  const tagName = el.tagName.toLowerCase();
+  const interactiveTags = ['a', 'button', 'input', 'select', 'textarea'];
+  
+  // 检查当前元素是否是真正的交互元素
+  const isCurrentInteractive = 
+    interactiveTags.includes(tagName) ||
+    window.getComputedStyle(el).cursor === 'pointer' ||
+    el.hasAttribute('onclick');
+  
+  // 检查 Vue 事件监听器（@click 等）
+  const htmlEl = el as any;
+  const hasVueClick = htmlEl._vei || htmlEl.__vnode?.props;
+  if (hasVueClick) {
+    const props = htmlEl.__vnode?.props || {};
+    if (props.onClick || props.onClickCapture) {
+      // 如果有 Vue 点击事件，也算作当前元素可交互
+      return true;
+    }
   }
+  
+  // 如果当前元素本身是交互元素，直接返回 true
+  if (isCurrentInteractive) return true;
+  
+  // 检查是否在 github-markdown-body 内
+  const isInMarkdownBody = el.classList.contains('github-markdown-body') || 
+                           el.closest('.github-markdown-body');
+  
+  // 如果在 markdown body 内但当前元素不是交互元素，不继续向上查找
+  if (isInMarkdownBody) return false;
+  
+  // 否则检查父元素
+  return el.parentElement ? isInteractive(el.parentElement) : false;
 };
 
-// 鼠标释放：清除按下状态
-const handleUp = () => {
-  isMouseDown.value = false;
-};
-
-// 检测文本选择状态
-const checkSelection = () => {
-  const selection = window.getSelection();
-  const hasSelection = !!(selection && !selection.isCollapsed);
-  if (hasSelection !== isSelecting.value) {
-    isSelecting.value = hasSelection;
-    document.documentElement.classList.toggle('is-selecting-text', hasSelection);
+// 更新光标位置
+const updatePosition = () => {
+  if (cursorElement.value) {
+    const offset = CURSOR_SIZE / 2;
+    // 使用 translate 优化性能，位置不需要过渡
+    cursorElement.value.style.translate = `${cursorX.value - offset}px ${cursorY.value - offset}px`;
+    // scale 单独设置，会有 CSS 过渡效果
+    cursorElement.value.style.scale = isHover.value ? `${HOVER_SCALE}` : '1';
   }
+  requestAnimationFrame(updatePosition);
 };
 
-// RAF 循环：同步光标位置到 DOM
-const loop = () => {
-  if (dotRef.value) {
-    const half = cursorSize.value / 2;
-    dotRef.value.style.translate = `${x.value - half}px ${y.value - half}px`;
-    dotRef.value.style.scale = String(cursorScale.value);
-  }
-  rafId = requestAnimationFrame(loop);
+// 鼠标移动处理
+const onMouseMove = (e: MouseEvent) => {
+  cursorX.value = e.clientX;
+  cursorY.value = e.clientY;
+  isVisible.value = true;
+  isHover.value = isInteractive(e.target as Element);
 };
 
-// 挂载：绑定事件监听器
+// 鼠标离开处理
+const onMouseLeave = () => {
+  isVisible.value = false;
+};
+
+// 组件挂载
 onMounted(() => {
-  window.addEventListener('mousemove', handleMove, { passive: true });
-  window.addEventListener('mouseleave', () => visible.value = false, { passive: true });
-  window.addEventListener('mousedown', handleDown, true);
-  window.addEventListener('mouseup', handleUp, true);
-  document.addEventListener('selectionchange', checkSelection);
-  rafId = requestAnimationFrame(loop);
+  // 设置 CSS 变量
+  document.documentElement.style.setProperty('--cursor-size', `${CURSOR_SIZE}px`);
+  
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseleave', onMouseLeave);
+  requestAnimationFrame(updatePosition);
 });
 
-// 卸载：清理事件监听器
+// 组件卸载
 onUnmounted(() => {
-  window.removeEventListener('mousemove', handleMove);
-  window.removeEventListener('mouseleave', () => visible.value = false);
-  window.removeEventListener('mousedown', handleDown, true);
-  window.removeEventListener('mouseup', handleUp, true);
-  document.removeEventListener('selectionchange', checkSelection);
-  document.documentElement.classList.remove('is-selecting-text');
-  if (rafId) cancelAnimationFrame(rafId);
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseleave', onMouseLeave);
 });
 </script>
 
 <template>
-  <!-- 自定义光标：圆形，跟随鼠标，使用 mix-blend-mode 实现反色 -->
-  <div ref="dotRef" class="cursor-dot" :style="{
-    opacity: cursorOpacity,
-    width: cursorSize + 'px',
-    height: cursorSize + 'px',
-    background: color,
-    mixBlendMode: blendMode
-  }" />
+  <div 
+    ref="cursorElement"
+    class="custom-cursor"
+    :class="{ 'hover': isHover, 'visible': isVisible }"
+  />
 </template>
 
 <style scoped>
-/* 光标样式：固定定位、圆形、GPU 加速 */
-.cursor-dot {
+.custom-cursor {
   position: fixed;
-  left: 0;
   top: 0;
-  z-index: 9999;
+  left: 0;
+  width: var(--cursor-size, 8px);
+  height: var(--cursor-size, 8px);
   border-radius: 50%;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
   pointer-events: none;
-  user-select: none;
-  transition: opacity 0.2s ease-out, scale 0.2s ease-out;
-  will-change: translate, scale;
-  backface-visibility: hidden;
-  contain: layout style paint;
+  z-index: 10000;
+  
+  /* 默认状态：黑色边框小圆环 */
+  border: 2px solid #000;
+  background-color: transparent;
+  
+  /* 初始隐藏 */
+  opacity: 0;
+  
+  /* 优雅的过渡效果 */
+  transition: 
+    opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    border-width 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    scale 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 性能优化 */
+  will-change: scale, translate;
+}
+
+.custom-cursor.visible {
+  opacity: 1;
+}
+
+/* 悬停状态：白色圆饼 + 反色效果 */
+.custom-cursor.hover {
+  border-width: 0;
+  background-color: #ffffff;
+  mix-blend-mode: difference;
 }
 </style>
 
 <style>
-/* 全局隐藏系统光标 */
-html,
-body,
-#app,
-*,
-*:hover,
-*:active,
-*:focus {
+/* 隐藏默认光标 */
+* {
   cursor: none !important;
 }
 
-/* 输入框显示文本光标 */
+/* 文本输入区域保留文本光标 */
 input,
 textarea,
-[contenteditable="true"],
-.allow-text-cursor {
-  cursor: text !important;
-}
-
-/* 选择文本时显示文本光标 */
-.is-selecting-text,
-.is-selecting-text * {
+[contenteditable="true"] {
   cursor: text !important;
 }
 </style>

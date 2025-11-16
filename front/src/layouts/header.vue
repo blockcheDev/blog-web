@@ -53,7 +53,7 @@ const goToHome = () => {
 }
 
 .header-title:hover {
-    color: gray;
+    /* 移除 color: gray，保持黑色以确保光标反色效果正常 */
     transition: all 0.2s ease-in-out;
 }
 </style>
