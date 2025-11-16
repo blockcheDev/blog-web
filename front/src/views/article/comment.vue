@@ -193,11 +193,15 @@ const deleteComment = async (id: any) => {
     border: none;
     box-shadow: none;
     margin: 0;
+    border-radius: 0;
+    overflow: visible;
 }
 
 .comment-content-card :deep(.el-card__body) {
     padding: 0 !important;
     margin: 0;
+    border-radius: 0;
+    overflow: visible;
 }
 
 .comment-text {
