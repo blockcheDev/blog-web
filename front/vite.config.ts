@@ -14,7 +14,15 @@ import viteCompression from 'vite-plugin-compression'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          // 在生产环境中保留 Vue 内部属性（如 __vnode）
+          // 这会略微增加包大小，但能让运行时检测更可靠
+          isCustomElement: () => false
+        }
+      }
+    }),
     AutoImport({
       resolvers: [ElementPlusResolver()],
     }),
@@ -29,5 +37,9 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  // 在生产环境中启用开发模式的某些特性
+  define: {
+    __VUE_PROD_DEVTOOLS__: true, // 启用生产环境的 devtools 支持
   }
 })

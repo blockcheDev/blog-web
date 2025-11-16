@@ -12,42 +12,112 @@ const cursorElement = ref<HTMLDivElement | null>(null);
 const CURSOR_SIZE = 8; // 光标基础尺寸
 const HOVER_SCALE = 6;  // 悬停时的缩放倍率 (8px * 6 = 48px)
 
+// 调试模式（生产环境可以通过 localStorage 启用）
+const DEBUG = localStorage.getItem('cursor-debug') === 'true';
+
 // 判断元素是否可交互
-const isInteractive = (el: Element | null): boolean => {
-  if (!el) return false;
-  
-  const tagName = el.tagName.toLowerCase();
-  const interactiveTags = ['a', 'button', 'input', 'select', 'textarea'];
-  
-  // 检查当前元素是否是真正的交互元素
-  const isCurrentInteractive = 
-    interactiveTags.includes(tagName) ||
-    window.getComputedStyle(el).cursor === 'pointer' ||
-    el.hasAttribute('onclick');
-  
-  // 检查 Vue 事件监听器（@click 等）
-  const htmlEl = el as any;
-  const hasVueClick = htmlEl._vei || htmlEl.__vnode?.props;
-  if (hasVueClick) {
-    const props = htmlEl.__vnode?.props || {};
-    if (props.onClick || props.onClickCapture) {
-      // 如果有 Vue 点击事件，也算作当前元素可交互
-      return true;
-    }
+const isInteractive = (element: Element | null): boolean => {
+  if (!element || element === document.documentElement) return false;
+
+  const tag = element.tagName.toLowerCase();
+  const clickableTags = ['a', 'button', 'input', 'textarea', 'select', 'label'];
+
+  // 检测常见可点击标签、CSS cursor、onclick 属性
+  if (clickableTags.includes(tag) ||
+    window.getComputedStyle(element).cursor === 'pointer' ||
+    element.hasAttribute('onclick')) {
+    return true;
   }
+
+  // // 检测 Element Plus 组件（通过类名）- 作为备用方案
+  // const classList = element.className;
+  // if (typeof classList === 'string') {
+  //   const clickableClasses = [
+  //     'el-button',
+  //     'el-card',
+  //     'el-link',
+  //     'el-menu-item',
+  //     'el-dropdown-item',
+  //     'el-tab',
+  //     'el-radio',
+  //     'el-checkbox',
+  //     'el-switch',
+  //     'el-tag',
+  //     'el-badge',
+  //     'el-avatar',
+  //     'el-image',
+  //     'el-pagination',
+  //     'el-breadcrumb-item'
+  //   ];
+    
+  //   if (clickableClasses.some(cls => classList.includes(cls))) {
+  //     return true;
+  //   }
+  // }
+
+  // 检测 Vue 事件监听器（@click）- 兼容生产环境
+  // 方法1: 检查 __vnode（开发环境）
+  const vnode = (element as any).__vnode?.props;
+  if (vnode?.onClick || vnode?.onClickCapture) return true;
+
+  // 方法2: 检查 _vei（Vue Event Invoker - 生产环境也可用）
+  // _vei 结构: { click: invoker, ... }
+  const vei = (element as any)._vei;
+  if (vei && (vei.click || vei.onClick)) return true;
+
+  // 方法3: 检查实际的点击事件监听器（仅开发环境可用）
+  const listeners = (window as any).getEventListeners?.(element);
+  if (listeners?.click?.length > 0) return true;
   
-  // 如果当前元素本身是交互元素，直接返回 true
-  if (isCurrentInteractive) return true;
-  
-  // 检查是否在 github-markdown-body 内
-  const isInMarkdownBody = el.classList.contains('github-markdown-body') || 
-                           el.closest('.github-markdown-body');
-  
-  // 如果在 markdown body 内但当前元素不是交互元素，不继续向上查找
-  if (isInMarkdownBody) return false;
-  
-  // 否则检查父元素
-  return el.parentElement ? isInteractive(el.parentElement) : false;
+  // // 方法4: 检查原生事件监听器（通过检查是否有事件属性）
+  // try {
+  //   const hasClickListener = element.onclick !== null || 
+  //                           (element as any)._events?.click ||
+  //                           Object.keys(vei || {}).some(key => key.toLowerCase().includes('click'));
+  //   if (hasClickListener) return true;
+  // } catch (e) {
+  //   // 忽略错误
+  // }
+
+  // 调试：输出元素信息
+  if (DEBUG) {
+    const el = element as any;
+    const debugInfo: any = {
+      tag,
+      classList: element.className,
+      hasVnode: !!el.__vnode,
+      hasVei: !!el._vei
+    };
+    
+    if (el._vei) {
+      debugInfo.veiKeys = Object.keys(el._vei);
+    }
+    if (el.__vnode?.props) {
+      debugInfo.vnodeProps = Object.keys(el.__vnode.props);
+    }
+    
+    console.log('Element debug:', debugInfo);
+  }
+
+  // 方法5: 检查 role 属性
+  const role = element.getAttribute('role');
+  if (role && ['button', 'link', 'menuitem', 'tab'].includes(role)) {
+    return true;
+  }
+
+  // 方法6: 检查 data-clickable 属性（可以手动添加到需要交互的元素上）
+  if (element.hasAttribute('data-clickable')) {
+    return true;
+  }
+
+  // 排除 github-markdown-body 内的非链接元素
+  if (element.closest('.github-markdown-body')) {
+    // 只允许链接标签触发放大
+    return tag === 'a';
+  }
+
+  // 递归检查父元素
+  return isInteractive(element.parentElement);
 };
 
 // 更新光标位置
