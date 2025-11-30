@@ -1,48 +1,56 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 
-// 光标位置和状态
-const cursorX = ref(0);
-const cursorY = ref(0);
-const isVisible = ref(false);
-const isHover = ref(false);
-const isInputArea = ref(false);
-const isClicking = ref(false);
+// DOM 引用
 const cursorElement = ref<HTMLDivElement | null>(null);
 
-// 尺寸配置
-const CURSOR_SIZE = 8; // 光标基础尺寸
-const HOVER_SCALE = 6;  // 悬停时的缩放倍率 (8px * 6 = 48px)
-const INPUT_SCALE = 0.1; // 输入区域的缩放倍率（几乎不可见）
-const CLICK_SCALE = 0.1; // 点击时的缩放倍率（缩小到消失）
+// 状态变量 (非响应式，提升性能)
+let cursorX = 0;
+let cursorY = 0;
+let currentX = 0;
+let currentY = 0;
+let isVisible = false;
+let isClicking = false;
+let isHover = false;
+let isInputArea = false;
 
-// 调试模式（生产环境可以通过 localStorage 启用）
-const DEBUG = localStorage.getItem('cursor-debug') === 'true';
+// 缓存上一次的目标元素，避免重复计算
+let lastTarget: Element | null = null;
+
+// 尺寸配置
+const CURSOR_SIZE = 8;
+const HOVER_SCALE = 8;
+const INPUT_SCALE = 0.1;
+const CLICK_SCALE = 0.1;
+
+// 动画状态
+let currentScale = 1;
+let targetScale = 1;
+let animationFrameId: number | null = null;
+let isAnimating = false;
+let lastFrameTime = 0;
+
+// 动画配置
+const SCALE_SPEED = 0.15;
+const POSITION_SPEED = 0.40;
+const STOP_THRESHOLD = 0.001;
+const TARGET_FRAME_TIME = 1000 / 60;
+const MAX_DELTA_TIME = 1000 / 30;
 
 // 判断元素是否为文本输入区域
 const isTextInput = (element: Element | null): boolean => {
   if (!element) return false;
-  
   const tag = element.tagName.toLowerCase();
-  const inputTags = ['input', 'textarea'];
-  
-  // 检查是否为输入标签
-  if (inputTags.includes(tag)) return true;
-  
-  // 检查是否为可编辑元素
-  if (element.getAttribute('contenteditable') === 'true') return true;
-  
-  return false;
+  return ['input', 'textarea'].includes(tag) || element.getAttribute('contenteditable') === 'true';
 };
 
 // 判断元素是否可交互
 const isInteractive = (element: Element | null): boolean => {
   if (!element || element === document.documentElement) return false;
 
+  // 快速检查：如果是特定容器，直接返回 false
   const classList = element.classList;
-  
-  // 排除遮罩层本身、抽屉容器本身、对话框容器本身（但不排除其内部元素）
-  if (classList.contains('el-overlay') || 
+  if (classList.contains('el-overlay') ||
       classList.contains('el-drawer') ||
       classList.contains('el-drawer__wrapper') ||
       classList.contains('el-dialog__wrapper') ||
@@ -55,171 +63,168 @@ const isInteractive = (element: Element | null): boolean => {
   }
 
   const tag = element.tagName.toLowerCase();
-  const clickableTags = ['a', 'button', 'input', 'textarea', 'select', 'label'];
-
-  // 检测常见可点击标签、CSS cursor、onclick 属性
-  if (clickableTags.includes(tag) ||
-    window.getComputedStyle(element).cursor === 'pointer' ||
-    element.hasAttribute('onclick')) {
+  // 常见交互标签
+  if (['a', 'button', 'select', 'label', 'input', 'textarea'].includes(tag) ||
+      element.hasAttribute('onclick')) {
     return true;
   }
 
-  // 检测 Vue 事件监听器（@click）- 兼容生产环境
-  // 方法1: 检查 __vnode（开发环境）
+  // 检查 Vue 事件监听器 (开发环境)
   const vnode = (element as any).__vnode?.props;
   if (vnode?.onClick || vnode?.onClickCapture) return true;
 
-  // 排除 github-markdown-body 内的非链接元素
+  // 昂贵的检查放在最后
+  if (window.getComputedStyle(element).cursor === 'pointer') {
+    return true;
+  }
+
+  // 特殊处理 github-markdown-body
   if (element.closest('.github-markdown-body')) {
-    // 只允许链接标签触发放大
     return tag === 'a';
   }
 
-  // 递归检查父元素
   return isInteractive(element.parentElement);
 };
 
-// 当前缩放值（用于平滑过渡）
-let currentScale = 1;
-let targetScale = 1;
-let animationFrameId: number | null = null;
-let isAnimating = false;
-let lastFrameTime = 0;
+// 更新 DOM 类名
+const updateCursorClass = () => {
+  if (!cursorElement.value) return;
+  const cl = cursorElement.value.classList;
+  
+  isVisible ? cl.add('visible') : cl.remove('visible');
+  isHover ? cl.add('hover') : cl.remove('hover');
+  isInputArea ? cl.add('input-area') : cl.remove('input-area');
+  isClicking ? cl.add('clicking') : cl.remove('clicking');
+};
 
-// 动画配置（针对高刷新率优化）
-const ANIMATION_SPEED = 0.18; // 降低插值系数，使动画更平滑
-const STOP_THRESHOLD = 0.01; // 停止阈值
-const TARGET_FRAME_TIME = 1000 / 60; // 基准 60fps (16.67ms)
-const MAX_DELTA_TIME = 1000 / 30; // 最大帧间隔 (33.33ms)，防止异常跳跃
-
-// 更新光标位置（支持 60Hz/120Hz/144Hz 等高刷新率）
+// 动画循环
 const updatePosition = (timestamp: number = 0) => {
   if (!cursorElement.value) return;
-  
-  // 计算帧间隔时间（用于时间补偿）
+
   let deltaTime = lastFrameTime ? timestamp - lastFrameTime : TARGET_FRAME_TIME;
   lastFrameTime = timestamp;
-  
-  // 限制最大帧间隔，防止页面切换回来时的跳跃
   deltaTime = Math.min(deltaTime, MAX_DELTA_TIME);
   
-  // 时间补偿系数（确保在不同刷新率下动画速度一致）
-  // 使用平方根使补偿更平滑
   const timeCompensation = Math.sqrt(deltaTime / TARGET_FRAME_TIME);
   
+  // 位置插值
+  const moveX = (cursorX - currentX) * POSITION_SPEED * timeCompensation;
+  const moveY = (cursorY - currentY) * POSITION_SPEED * timeCompensation;
+  
+  currentX += moveX;
+  currentY += moveY;
+
+  // 缩放插值
+  const scaleDiff = targetScale - currentScale;
+  currentScale += scaleDiff * SCALE_SPEED * timeCompensation;
+
   const offset = CURSOR_SIZE / 2;
   
-  // 平滑插值（lerp）实现流畅过渡
-  const scaleDiff = Math.abs(targetScale - currentScale);
-  
-  if (scaleDiff > STOP_THRESHOLD) {
-    // 还在动画中，继续插值（应用时间补偿）
-    // 使用缓动函数使动画更自然
-    const lerpFactor = Math.min(ANIMATION_SPEED * timeCompensation, 0.5);
-    currentScale += (targetScale - currentScale) * lerpFactor;
-    
-    // 使用 transform 一次性更新位置和缩放
-    cursorElement.value.style.transform = 
-      `translate(${cursorX.value - offset}px, ${cursorY.value - offset}px) scale(${currentScale})`;
-    
-    // 继续下一帧
+  // 应用变换
+  cursorElement.value.style.transform = 
+    `translate3d(${currentX - offset}px, ${currentY - offset}px, 0) scale(${currentScale})`;
+
+  // 检查是否停止动画
+  const isPositionClose = Math.abs(cursorX - currentX) < 0.1 && Math.abs(cursorY - currentY) < 0.1;
+  const isScaleClose = Math.abs(targetScale - currentScale) < STOP_THRESHOLD;
+
+  if (!isPositionClose || !isScaleClose) {
     animationFrameId = requestAnimationFrame(updatePosition);
   } else {
-    // 动画完成，停止 RAF
+    // 强制对齐
+    currentX = cursorX;
+    currentY = cursorY;
     currentScale = targetScale;
     cursorElement.value.style.transform = 
-      `translate(${cursorX.value - offset}px, ${cursorY.value - offset}px) scale(${currentScale})`;
+      `translate3d(${currentX - offset}px, ${currentY - offset}px, 0) scale(${currentScale})`;
+      
     isAnimating = false;
     animationFrameId = null;
-    lastFrameTime = 0; // 重置时间戳
+    lastFrameTime = 0;
   }
 };
 
-// 启动动画（仅在状态变化时调用）
 const startAnimation = () => {
   if (!isAnimating) {
     isAnimating = true;
-    updatePosition();
+    lastFrameTime = 0;
+    animationFrameId = requestAnimationFrame(updatePosition);
   }
 };
 
-// 更新光标位置（仅更新坐标，不触发动画）
-const updateCursorPosition = () => {
-  if (cursorElement.value) {
-    const offset = CURSOR_SIZE / 2;
-    cursorElement.value.style.transform = 
-      `translate(${cursorX.value - offset}px, ${cursorY.value - offset}px) scale(${currentScale})`;
-  }
-};
-
-// 鼠标移动处理
 const onMouseMove = (e: MouseEvent) => {
-  cursorX.value = e.clientX;
-  cursorY.value = e.clientY;
-  isVisible.value = true;
+  cursorX = e.clientX;
+  cursorY = e.clientY;
   
+  if (!isVisible) {
+    isVisible = true;
+    currentX = cursorX;
+    currentY = cursorY;
+    updateCursorClass();
+  }
+
+  startAnimation();
+
   const target = e.target as Element;
-  const wasInputArea = isInputArea.value;
-  const wasHover = isHover.value;
   
-  isInputArea.value = isTextInput(target);
-  isHover.value = !isInputArea.value && isInteractive(target);
-  
-  // 计算新的目标缩放值（点击状态优先级最高）
-  const newTargetScale = isClicking.value ? CLICK_SCALE : 
-                         (isInputArea.value ? INPUT_SCALE : 
-                         (isHover.value ? HOVER_SCALE : 1));
-  
-  // 只在状态变化时才启动动画
+  // 核心优化：如果目标元素没有变化，跳过昂贵的检查
+  if (target !== lastTarget) {
+    lastTarget = target;
+    
+    const wasInputArea = isInputArea;
+    const wasHover = isHover;
+    
+    isInputArea = isTextInput(target);
+    // 只有非输入区域才检查是否可交互
+    isHover = !isInputArea && isInteractive(target);
+    
+    if (wasInputArea !== isInputArea || wasHover !== isHover) {
+      updateCursorClass();
+    }
+  }
+
+  // 计算目标缩放
+  const newTargetScale = isClicking ? CLICK_SCALE : 
+                         (isInputArea ? INPUT_SCALE : 
+                         (isHover ? HOVER_SCALE : 1));
+
   if (newTargetScale !== targetScale) {
     targetScale = newTargetScale;
-    startAnimation();
-  } else {
-    // 状态没变，只更新位置
-    updateCursorPosition();
   }
 };
 
-// 鼠标离开处理
 const onMouseLeave = () => {
-  isVisible.value = false;
+  isVisible = false;
+  updateCursorClass();
 };
 
-// 鼠标按下处理
 const onMouseDown = () => {
-  isClicking.value = true;
+  isClicking = true;
+  updateCursorClass();
   targetScale = CLICK_SCALE;
   startAnimation();
 };
 
-// 鼠标松开处理
 const onMouseUp = () => {
-  isClicking.value = false;
-  // 恢复到当前应有的状态
-  targetScale = isInputArea.value ? INPUT_SCALE : (isHover.value ? HOVER_SCALE : 1);
+  isClicking = false;
+  updateCursorClass();
+  targetScale = isInputArea ? INPUT_SCALE : (isHover ? HOVER_SCALE : 1);
   startAnimation();
 };
 
-// 组件挂载
 onMounted(() => {
-  // 设置 CSS 变量
   document.documentElement.style.setProperty('--cursor-size', `${CURSOR_SIZE}px`);
-  
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseleave', onMouseLeave);
-  document.addEventListener('mousedown', onMouseDown);
-  document.addEventListener('mouseup', onMouseUp);
-  // 不再启动无限 RAF 循环，只在需要时才启动动画
+  document.addEventListener('mousemove', onMouseMove, { passive: true });
+  document.addEventListener('mouseleave', onMouseLeave, { passive: true });
+  document.addEventListener('mousedown', onMouseDown, { passive: true });
+  document.addEventListener('mouseup', onMouseUp, { passive: true });
 });
 
-// 组件卸载
 onUnmounted(() => {
   document.removeEventListener('mousemove', onMouseMove);
   document.removeEventListener('mouseleave', onMouseLeave);
   document.removeEventListener('mousedown', onMouseDown);
   document.removeEventListener('mouseup', onMouseUp);
-  
-  // 清理可能存在的动画帧
   if (animationFrameId !== null) {
     cancelAnimationFrame(animationFrameId);
   }
@@ -227,16 +232,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div 
-    ref="cursorElement"
-    class="custom-cursor"
-    :class="{ 
-      'hover': isHover, 
-      'visible': isVisible, 
-      'input-area': isInputArea,
-      'clicking': isClicking 
-    }"
-  />
+  <div ref="cursorElement" class="custom-cursor" />
 </template>
 
 <style scoped>
@@ -259,9 +255,9 @@ onUnmounted(() => {
   
   /* 优雅的过渡效果（移除 scale，由 JS RAF 控制） */
   transition: 
-    opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-    border-width 0.03s cubic-bezier(1, 0, 1, 1),
-    background-color 0.03s cubic-bezier(1, 0, 1, 1);  
+    opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    border-width 0.1s cubic-bezier(0.25, 0.8, 0.25, 1),
+    background-color 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);  
   /* 性能优化：启用 GPU 加速 */
   will-change: transform;
   transform: translateZ(0);
