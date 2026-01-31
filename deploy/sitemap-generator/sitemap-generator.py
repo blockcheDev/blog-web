@@ -110,12 +110,17 @@ def generate_sitemap(list_article: list[Article], output_file="sitemap.xml"):
 
     log(f"Sitemap已生成: {output_file}")
 
-# 每个整点执行一次任务
-def schedule_hourly(task):
+# 每5分钟（00/05/10/...）执行一次任务
+def schedule_every_5_minutes(task):
     while True:
         now = datetime.now()
-        # 计算下一个整点
-        target = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
+        # 计算下一个5分钟边界（对齐到 00/05/10/...）
+        next_minute = ((now.minute // 5) + 1) * 5
+        if next_minute >= 60:
+            target = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
+        else:
+            target = now.replace(minute=next_minute, second=0, microsecond=0)
+
         delay = (target - now).total_seconds()
         log(f"Next task scheduled at {target.strftime('%Y-%m-%d %H:%M:%S')}")
         time.sleep(delay)
@@ -143,4 +148,4 @@ if __name__ == "__main__":
 
     run()
     
-    schedule_hourly(run)
+    schedule_every_5_minutes(run)
