@@ -254,3 +254,51 @@ func GetWebInfo(c *gin.Context) {
 		"TotalPageViews":      total_page_views,
 	})
 }
+
+func GetArticleSEO(c *gin.Context) {
+	id := c.Param("id")
+	db_article := db.GetArticle(id)
+	if db_article == nil {
+		c.String(http.StatusNotFound, "文章不存在")
+		return
+	}
+	article := logic.GetArticle(db_article)
+
+	// 简单的截取作为描述
+	desc := article.Content
+	if len(desc) > 150 {
+		desc = desc[:150] + "..."
+	}
+
+	// 构造 Keywords
+	var keywords string
+	for _, tag := range article.Tags {
+		keywords += tag.Name + ","
+	}
+	if len(keywords) > 0 {
+		keywords = keywords[:len(keywords)-1]
+	}
+
+	html := fmt.Sprintf(`
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>%s - blockche blog</title>
+	<meta name="description" content="%s">
+	<meta name="keywords" content="%s">
+	<meta name="author" content="%s">
+</head>
+<body>
+	<h1>%s</h1>
+	<p>发布时间：%s | 作者：%s | 分类：%s</p>
+	<div class="content" style="white-space: pre-wrap;">
+%s
+	</div>
+</body>
+</html>
+`, article.Title, desc, keywords, article.User.Name, article.Title, article.CreatedAt.Format("2006-01-02 15:04:05"), article.User.Name, article.Category.Name, article.Content)
+
+	c.Header("Content-Type", "text/html; charset=utf-8")
+	c.String(http.StatusOK, html)
+}

@@ -54,6 +54,8 @@ func StartRouter() {
 			user.GET("/:id", controller.GetUserName) // 获取用户名称
 		}
 		base.GET("/web_info", controller.GetWebInfo) // 获取网站信息
+
+		base.GET("/seo/article/:id", controller.GetArticleSEO) // SEO 接口
 	}
 
 	// 需要登录的接口
