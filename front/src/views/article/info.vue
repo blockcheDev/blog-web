@@ -15,7 +15,6 @@ onMounted(() => {
     <div class="info-container">
         <div class="info-item">
             <span class="info-label">文章作者：</span>
-            <!-- <a href="http://www.hitori.cn" class="info-link">{{ data.UserName }}</a> -->
             <span class="info-value">{{ data.User.Name }}</span>
         </div>
         <div class="info-item">

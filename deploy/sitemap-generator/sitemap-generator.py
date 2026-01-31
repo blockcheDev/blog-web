@@ -36,7 +36,7 @@ def fetch_articles_from_api(api_url):
         response.raise_for_status()  # 检查请求是否成功
         json_data = response.json()
         return [Article(
-            url=f"https://www.hitori.cn/article/{article['ID']}",
+            url=f"https://anonchan.cc/article/{article['ID']}",
             lastmod=article['ModifiedAt']
         ) for article in json_data]
     except requests.exceptions.RequestException as e:
@@ -85,7 +85,7 @@ def generate_sitemap(list_article: list[Article], output_file="sitemap.xml"):
 '''
 
     # 添加首页<url>条目
-    sitemap_xml = add_url_to_sitemap(sitemap_xml, "https://www.hitori.cn/home", "", "daily", "1.0")
+    sitemap_xml = add_url_to_sitemap(sitemap_xml, "https://anonchan.cc/home", "", "daily", "1.0")
 
     # 遍历每个文章，添加<url>条目
     for article in list_article:
@@ -123,7 +123,7 @@ def schedule_hourly(task):
 
 def run():
     # 配置API信息
-    API_URL = "https://www.hitori.cn/api/article/all"  # 替换为你的实际API地址
+    API_URL = "https://anonchan.cc/api/article/all"  # 替换为你的实际API地址
     
     # 获取文章列表
     list_article = fetch_articles_from_api(API_URL)
